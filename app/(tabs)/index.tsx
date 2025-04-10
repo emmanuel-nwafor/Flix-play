@@ -1,17 +1,24 @@
-import { ScrollView, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, Text, View } from "react-native";
 
 export default function Index() {
   return (
         <>
-         <ScrollView>
-          <View style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
+         <ScrollView style={{
             backgroundColor: "#1b1b1b",
           }}>
-            <Text style={{ color: "white" }}>Home Screen hio</Text>
-          </View>
+          <SafeAreaView style={{ 
+            justifyContent: "center", 
+            alignItems: "center", 
+            flex: 1,
+             }}>
+            <View style={{ 
+              justifyContent: "center", 
+              alignItems: "center", 
+              flex: 1,
+             }}>
+              <Text style={{ color: "white", fontSize: 40 }}>Home Screen </Text>
+            </View>
+          </SafeAreaView>
          </ScrollView>
         </>
   );
