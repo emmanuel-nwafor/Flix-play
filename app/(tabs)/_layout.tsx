@@ -8,7 +8,7 @@ export default function TabsLayout() {
         headerShown: true,
         headerStyle: {
           backgroundColor: "#1b1b1b",
-          shadowColor: "#1b1b1b",
+          shadowColor: "#fff",
         },
         tabBarStyle: {
           backgroundColor: "#1b1b1b",
@@ -28,6 +28,7 @@ export default function TabsLayout() {
             <Ionicons name="home-outline" size={size} color={color} />
           ),
           title: "Home",
+          headerShown: true,
         }}
       />
       <Tabs.Screen
