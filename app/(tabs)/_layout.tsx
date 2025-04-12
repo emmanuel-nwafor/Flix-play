@@ -7,11 +7,11 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: true,
         headerStyle: {
-          backgroundColor: "#1b1b1b",
+          backgroundColor: "#000",
           shadowColor: "#1b1b1b",
         },
         tabBarStyle: {
-          backgroundColor: "#1b1b1b",
+          backgroundColor: "#000",
           borderTopWidth: 0,
           height: 60,
           alignItems: "center",
@@ -27,7 +27,7 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home-outline" size={size} color={color} />
           ),
-          title: "Home",
+          title: "Flix Play",
         }}
       />
       <Tabs.Screen

@@ -5,7 +5,7 @@ import UpcomingMovies from "../components/UpcomingMovies";
 
 export default function Index() {
   return (
-    <ScrollView style={{ backgroundColor: "#1b1b1b" }}>
+    <ScrollView style={{ backgroundColor: "#000" }}>
       <SafeAreaView style={{ flex: 1, padding: 10 }}>
         <View>
           <Text
