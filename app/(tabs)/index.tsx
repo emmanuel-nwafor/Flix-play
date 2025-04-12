@@ -6,19 +6,17 @@ export default function Index() {
          <ScrollView style={{
             backgroundColor: "#1b1b1b",
           }}>
-          <SafeAreaView style={{ 
-            justifyContent: "center", 
-            alignItems: "center", 
-            flex: 1,
-             }}>
+          {/* <SafeAreaView> */}
             <View style={{ 
               justifyContent: "center", 
               alignItems: "center", 
               flex: 1,
              }}>
               <Text style={{ color: "white", fontSize: 40 }}>Home Screen </Text>
+              <Text style={{ color: "white", fontSize: 40 }}>Home Screen </Text>
+              <Text style={{ color: "white", fontSize: 40 }}>Home Screen </Text>
             </View>
-          </SafeAreaView>
+          {/* </SafeAreaView> */}
          </ScrollView>
         </>
   );
