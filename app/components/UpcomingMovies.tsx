@@ -2,13 +2,13 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
-interface LatestMovieProps {
+interface UpcomingMovies {
   imageUrl: string; 
   title: string;  
-  duration: string;  
+  trailer: string;  
 }
 
-const LatestMovie: React.FC<LatestMovieProps> = ({ imageUrl, title, duration }) => {
+const UpcomingMovies: React.FC<UpcomingMovies> = ({ imageUrl, title, trailer }) => {
   return (
     <View style={styles.container}>
       <Image
@@ -18,7 +18,7 @@ const LatestMovie: React.FC<LatestMovieProps> = ({ imageUrl, title, duration }) 
 
       <View style={styles.contain}>
         <Text style={styles.title}>{title}</Text>
-        <Text style={styles.duration}>{duration}</Text>
+        <Text style={styles.duration}>{trailer}</Text>
       </View>
     </View>
   );
@@ -54,4 +54,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LatestMovie;
+export default UpcomingMovies;
