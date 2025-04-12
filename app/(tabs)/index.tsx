@@ -1,9 +1,10 @@
-import { SafeAreaView, ScrollView, View, TouchableOpacity } from "react-native";
+import { SafeAreaView, ScrollView, View, TouchableOpacity, Image, Dimensions } from "react-native";
 import HeaderTitle from "../components/HeaderTitle";
-import ImageCarousel from "../components/ImageCarousel";
+
+const { width } = Dimensions.get('window');
 
 const image = [
-  'https://via.placeholder.com/600x200?text=Image+1',
+  'https://i.pinimg.com/236x/69/66/87/69668756a24d07355f402f7a3d53fc58.jpg',
   'https://via.placeholder.com/600x200?text=Image+2',
   'https://via.placeholder.com/600x200?text=Image+3',
   'https://via.placeholder.com/600x200?text=Image+4',
@@ -11,7 +12,7 @@ const image = [
 
 export default function Index() {
   return (
-    <ScrollView style={{ backgroundColor: "#1b1b1b" }} horizontal>
+    <ScrollView style={{ backgroundColor: "#1b1b1b" }} horizontal showsHorizontalScrollIndicator={false}>
       <SafeAreaView style={{ flex: 1, padding: 10 }}>
         <View
           style={{
@@ -28,11 +29,11 @@ export default function Index() {
                 width: 100,
               }}
             >
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={{
                   backgroundColor: "#333",
-                  padding: 10, 
-                  borderRadius: 100, 
+                  padding: 10,
+                  borderRadius: 100,
                 }}
                 onPress={() => {
                   console.log(`${genre} clicked`);
@@ -42,7 +43,22 @@ export default function Index() {
               </TouchableOpacity>
             </View>
           ))}
-          <ImageCarousel images={image} />
+
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            {image.map((uri, index) => (
+              <Image
+                key={index}
+                source={{ uri }}
+                style={{
+                  width: width - 40,
+                  height: 200,
+                  borderRadius: 10,
+                  resizeMode: 'cover',
+                  marginRight: 10,
+                }}
+              />
+            ))}
+          </View>
         </View>
       </SafeAreaView>
     </ScrollView>
