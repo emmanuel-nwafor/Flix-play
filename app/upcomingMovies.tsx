@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, SafeAreaView, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  SafeAreaView,
+  ActivityIndicator,
+} from 'react-native';
 import axios from 'axios';
 
-const LatestMoviesPage = () => {
+const UpcomingMoviesPage = () => {
   const [movies, setMovies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAllLatestMovies = async () => {
+    const fetchUpcomingMovies = async () => {
       try {
         const allMovies: any[] = [];
         let page = 1;
@@ -15,7 +23,7 @@ const LatestMoviesPage = () => {
 
         while (page <= totalPages) {
           const response = await axios.get(
-            `https://api.themoviedb.org/3/movie/now_playing?api_key=7011b5acfc7ee4ea8bc216e0947cfe24&language=en-US&page=${page}`
+            `https://api.themoviedb.org/3/movie/upcoming?api_key=7011b5acfc7ee4ea8bc216e0947cfe24&language=en-US&page=${page}`
           );
 
           allMovies.push(...response.data.results);
@@ -25,13 +33,13 @@ const LatestMoviesPage = () => {
 
         setMovies(allMovies);
       } catch (error) {
-        console.error('Failed to fetch latest movies:', error);
+        console.error('Failed to fetch upcoming movies:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAllLatestMovies();
+    fetchUpcomingMovies();
   }, []);
 
   const renderMovieItem = ({ item }: { item: any }) => (
@@ -41,16 +49,19 @@ const LatestMoviesPage = () => {
         style={styles.poster}
         resizeMode="cover"
       />
-      <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
+      <View style={styles.details}>
+        <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
+        <Text style={styles.releaseDate}>Release: {item.release_date}</Text>
+      </View>
     </View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Custom Header */}
+      {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.pageTitle}>Latest Movie Releases</Text>
-        <Text style={styles.subTitle}>Catch up with the newest blockbusters!</Text>
+        <Text style={styles.pageTitle}>Upcoming Movies</Text>
+        <Text style={styles.subTitle}>Get ready for the next big hits!</Text>
       </View>
 
       {loading ? (
@@ -69,7 +80,7 @@ const LatestMoviesPage = () => {
   );
 };
 
-export default LatestMoviesPage;
+export default UpcomingMoviesPage;
 
 const styles = StyleSheet.create({
   container: {
@@ -78,7 +89,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingTop: 20,
   },
-  // Header style
   header: {
     marginBottom: 20,
     alignItems: 'center',
@@ -103,7 +113,7 @@ const styles = StyleSheet.create({
   movieCard: {
     width: '48%',
     backgroundColor: '#111',
-    borderRadius: 26,
+    borderRadius: 10,
     overflow: 'hidden',
   },
   poster: {
@@ -112,10 +122,17 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
+  details: {
+    padding: 8,
+  },
   title: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
-    padding: 8,
+  },
+  releaseDate: {
+    color: '#ccc',
+    fontSize: 13,
+    marginTop: 4,
   },
 });

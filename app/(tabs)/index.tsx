@@ -88,7 +88,7 @@ export default function HomeScreen() {
           marginBottom: 5,
         }}
       >
-        <Ionicons name={genreIcons[item]} size={24} color="#fff" />
+        <Ionicons name={genreIcons[item]} size={24} color="green" />
       </View>
       <Text style={{ color: '#fff' }}>{item}</Text>
     </TouchableOpacity>
@@ -123,7 +123,7 @@ export default function HomeScreen() {
       {/* Header */}
       <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
         <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#fff', margin: 15, flex: 1, alignItems: "center", justifyContent: "center" }}>
-          Welcome To Flix Play 
+          Welcome To Flix Play 🎬
         </Text>
       </View>
 
@@ -141,7 +141,7 @@ export default function HomeScreen() {
       {/* Latest Movies Section */}
       <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff', margin: 15 }}>
-          Top Movies
+          Top Movies 📽
         </Text>
         <Link href={"./latestMovies"} style={{ fontSize: 15, color: 'green', margin: 15 }}>
           See all
@@ -161,9 +161,15 @@ export default function HomeScreen() {
       )}
 
       {/* Upcoming Movies Section */}
-      <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff', margin: 15 }}>
-        Upcoming Movies
-      </Text>
+      <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff', margin: 15 }}>
+          Upcoming Movies 📺
+        </Text>
+        <Link href={"./upcomingMovies"} style={{ fontSize: 15, color: 'green', margin: 15 }}>
+          See all
+        </Link>
+      </View>
+
       {loading ? (
         <ActivityIndicator size="large" color="green" />
       ) : (
