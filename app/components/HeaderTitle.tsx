@@ -8,7 +8,7 @@ interface HeaderTitleProps {
 
 export default function HeaderTitle({ title, iconName }: HeaderTitleProps) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', padding: 2 }}>
+    <View style={{ flexDirection: 'row', padding: 2 }}>
       {/* Conditionally render the icon if iconName is passed */}
       {iconName && (
         <Ionicons

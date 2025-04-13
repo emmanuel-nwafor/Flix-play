@@ -2,6 +2,7 @@ import { SafeAreaView, ScrollView, View, TouchableOpacity, Text, StyleSheet, Fla
 import HeaderTitle from "../components/HeaderTitle";
 import LatestMovie from "../components/LatestMovies";
 import UpcomingMovies from "../components/UpcomingMovies";
+import { Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";  // Import Ionicons (or your preferred icon library)
 
 export default function Index() {
@@ -49,7 +50,13 @@ export default function Index() {
 
         {/* Horizontal scroll of Latest Movies */}
         <View style={styles.moviesSectionContainer}>
-          <Text style={styles.sectionTitle}>Latest Movies</Text>
+          <View style={styles.minicontainer}>
+            <Text style={styles.sectionTitle}>Latest Movies</Text>
+            <Link style={{ color: "green" }} href={"/screens/latestMovies"}>
+              See all
+            </Link>
+          </View>          
+          
           <FlatList
             data={[
               { imageUrl: "https://i.pinimg.com/474x/ae/3d/dd/ae3dddf605a6113b4dc7dc7b3826e931.jpg", title: "Deadpool and Wolverine", duration: "2hrs 10mins" },
@@ -119,4 +126,10 @@ const styles = StyleSheet.create({
     margin: 10,
     fontSize: 28,
   },
+  minicontainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  }
 });
