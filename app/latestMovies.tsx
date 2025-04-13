@@ -47,9 +47,14 @@ const LatestMoviesPage = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.pageTitle}>All Latest Movies</Text>
+      {/* Custom Header */}
+      <View style={styles.header}>
+        <Text style={styles.pageTitle}>Latest Movie Releases</Text>
+        <Text style={styles.subTitle}>Catch up with the newest blockbusters!</Text>
+      </View>
+
       {loading ? (
-        <ActivityIndicator size="large" color="#fff" />
+        <ActivityIndicator size="large" color="green" />
       ) : (
         <FlatList
           data={movies}
@@ -73,11 +78,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingTop: 20,
   },
+  // Header style
+  header: {
+    marginBottom: 20,
+    alignItems: 'center',
+  },
   pageTitle: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 20,
+    marginBottom: 5,
+    textAlign: 'center',
+  },
+  subTitle: {
+    fontSize: 16,
+    fontWeight: '300',
+    color: '#aaa',
     textAlign: 'center',
   },
   row: {

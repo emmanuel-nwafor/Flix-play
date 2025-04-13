@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'expo-router';
 import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView } from 'react-native';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router'; // Importing the useRouter hook for navigation
 
 const genreList = ["Home", "Western", "Movies", "Horror", "Fantasy"] as const;
 type Genre = typeof genreList[number];
@@ -16,7 +16,6 @@ const genreIcons: Record<Genre, keyof typeof Ionicons.glyphMap> = {
 };
 
 interface Movie {
-  id: number;
   title: string;
   imageUrl: string;
   duration: string;
@@ -26,12 +25,12 @@ const screenWidth = Dimensions.get('window').width;
 
 export default function HomeScreen() {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [upcomingMovies, setUpcomingMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter(); // Hook to navigate between screens
 
   const fetchMovies = async () => {
     try {
-      const response = await axios.get(
+      const popularResponse = await axios.get(
         'https://api.themoviedb.org/3/movie/popular',
         {
           params: {
@@ -42,14 +41,32 @@ export default function HomeScreen() {
         }
       );
 
-      const topFive: Movie[] = response.data.results.slice(0, 5).map((movie: any) => ({
-        id: movie.id, // Store the movie id for navigation
+      const topFive: Movie[] = popularResponse.data.results.slice(0, 5).map((movie: any) => ({
         title: movie.title,
         imageUrl: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
         duration: '2hrs',
       }));
 
       setMovies(topFive);
+
+      const upcomingResponse = await axios.get(
+        'https://api.themoviedb.org/3/movie/upcoming',
+        {
+          params: {
+            api_key: '7011b5acfc7ee4ea8bc216e0947cfe24',
+            language: 'en-US',
+            page: 1,
+          },
+        }
+      );
+
+      const upcomingTopFive: Movie[] = upcomingResponse.data.results.slice(0, 5).map((movie: any) => ({
+        title: movie.title,
+        imageUrl: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+        duration: '2hrs',
+      }));
+
+      setUpcomingMovies(upcomingTopFive);
     } catch (error) {
       console.error('Error fetching movies:', error);
     } finally {
@@ -78,7 +95,7 @@ export default function HomeScreen() {
   );
 
   const renderMovie = ({ item }: { item: Movie }) => (
-    <TouchableOpacity
+    <View
       style={{
         width: screenWidth * 0.7,
         marginRight: 15,
@@ -86,7 +103,6 @@ export default function HomeScreen() {
         overflow: 'hidden',
         backgroundColor: '#1f2937',
       }}
-      onPress={() => router.push(`./movie/[id]/${item.id}`)} // Navigate to MovieDetailPage
     >
       <Image
         source={{ uri: item.imageUrl }}
@@ -99,7 +115,7 @@ export default function HomeScreen() {
         </Text>
         <Text style={{ color: '#9ca3af', fontSize: 12 }}>{item.duration}</Text>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 
   return (
@@ -107,7 +123,7 @@ export default function HomeScreen() {
       {/* Header */}
       <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
         <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#fff', margin: 15, flex: 1, alignItems: "center", justifyContent: "center" }}>
-          Welcome To Flix Play <Ionicons name="pause" size={50} color="green" />
+          Welcome To Flix Play 
         </Text>
       </View>
 
@@ -123,15 +139,37 @@ export default function HomeScreen() {
       </View>
 
       {/* Latest Movies Section */}
-      <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff', margin: 15 }}>
-        Latest Movies
-      </Text>
+      <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff', margin: 15 }}>
+          Top Movies
+        </Text>
+        <Link href={"./latestMovies"} style={{ fontSize: 15, color: 'green', margin: 15 }}>
+          See all
+        </Link>
+      </View>
       {loading ? (
         <ActivityIndicator size="large" color="green" />
       ) : (
         <FlatList
           horizontal
           data={movies}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={renderMovie}
+          showsHorizontalScrollIndicator={false}
+          style={{ padding: 15 }}
+        />
+      )}
+
+      {/* Upcoming Movies Section */}
+      <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff', margin: 15 }}>
+        Upcoming Movies
+      </Text>
+      {loading ? (
+        <ActivityIndicator size="large" color="green" />
+      ) : (
+        <FlatList
+          horizontal
+          data={upcomingMovies}
           keyExtractor={(item, index) => index.toString()}
           renderItem={renderMovie}
           showsHorizontalScrollIndicator={false}

@@ -13,5 +13,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "app/(tabs)/home.tsx", "app/components/HeaderTitle.tsx"  ]
+, "app/(tabs)/index.tsx", "app/components/HeaderTitle.tsx", "app/(tabs)/index.jsx", "app/movie/[id].jsx"  ]
 }

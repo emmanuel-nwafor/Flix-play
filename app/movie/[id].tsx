@@ -1,4 +1,3 @@
-// /app/movie/[id].tsx
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ActivityIndicator, ScrollView } from 'react-native';
 import axios from 'axios';
@@ -11,8 +10,8 @@ interface MovieDetails {
   runtime: string;
 }
 
-export default function MovieDetailsScreen({ route }: { route: any }) {
-  const { id } = route.params;  // The movie ID from the route params
+export default function MovieDetailsScreen({ params }: { params: { id: string } }) {
+  const { id } = params; // Access the `id` from the route params
   const [movieDetails, setMovieDetails] = useState<MovieDetails | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -56,23 +55,11 @@ export default function MovieDetailsScreen({ route }: { route: any }) {
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#000', padding: 20 }}>
-      <Image
-        source={{ uri: movieDetails.imageUrl }}
-        style={{ width: '100%', height: 400 }}
-        resizeMode="cover"
-      />
-      <Text style={{ color: '#fff', fontSize: 24, fontWeight: 'bold', marginVertical: 10 }}>
-        {movieDetails.title}
-      </Text>
-      <Text style={{ color: '#fff', fontSize: 16, marginBottom: 10 }}>
-        Release Date: {movieDetails.releaseDate}
-      </Text>
-      <Text style={{ color: '#fff', fontSize: 16, marginBottom: 10 }}>
-        Runtime: {movieDetails.runtime} mins
-      </Text>
-      <Text style={{ color: '#fff', fontSize: 16 }}>
-        {movieDetails.description}
-      </Text>
+      <Image source={{ uri: movieDetails.imageUrl }} style={{ width: '100%', height: 400 }} resizeMode="cover" />
+      <Text style={{ color: '#fff', fontSize: 24, fontWeight: 'bold', marginVertical: 10 }}>{movieDetails.title}</Text>
+      <Text style={{ color: '#fff', fontSize: 16, marginBottom: 10 }}>Release Date: {movieDetails.releaseDate}</Text>
+      <Text style={{ color: '#fff', fontSize: 16, marginBottom: 10 }}>Runtime: {movieDetails.runtime} mins</Text>
+      <Text style={{ color: '#fff', fontSize: 16 }}>{movieDetails.description}</Text>
     </ScrollView>
   );
 }
