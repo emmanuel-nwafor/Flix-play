@@ -24,7 +24,7 @@ export default function Index() {
               color: "white",
               margin: 10,
               marginBottom: 20,
-              fontSize: 35,
+              fontSize: 28,
               fontWeight: "bold",
             }}
           >
@@ -41,7 +41,6 @@ export default function Index() {
                   console.log(`${genre} clicked`);
                 }}
               >
-                {/* Use the iconName from genreIcons mapping */}
                 <HeaderTitle title={genre} iconName={genreIcons[genre]} />
               </TouchableOpacity>
             </View>
@@ -52,7 +51,7 @@ export default function Index() {
         <View style={styles.moviesSectionContainer}>
           <View style={styles.minicontainer}>
             <Text style={styles.sectionTitle}>Latest Movies</Text>
-            <Link style={{ color: "green" }} href={"/screens/latestMovies"}>
+            <Link style={{ color: "green", fontSize: 17 }} href={"/screens/latestMovies"}>
               See all
             </Link>
           </View>          
