@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView } from 'react-native';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router'; // Importing the useRouter hook for navigation
 
 const genreList = ["Home", "Western", "Movies", "Horror", "Fantasy"] as const;
 type Genre = typeof genreList[number];
@@ -15,6 +16,7 @@ const genreIcons: Record<Genre, keyof typeof Ionicons.glyphMap> = {
 };
 
 interface Movie {
+  id: number;
   title: string;
   imageUrl: string;
   duration: string;
@@ -25,6 +27,7 @@ const screenWidth = Dimensions.get('window').width;
 export default function HomeScreen() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter(); // Hook to navigate between screens
 
   const fetchMovies = async () => {
     try {
@@ -40,6 +43,7 @@ export default function HomeScreen() {
       );
 
       const topFive: Movie[] = response.data.results.slice(0, 5).map((movie: any) => ({
+        id: movie.id, // Store the movie id for navigation
         title: movie.title,
         imageUrl: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
         duration: '2hrs',
@@ -74,7 +78,7 @@ export default function HomeScreen() {
   );
 
   const renderMovie = ({ item }: { item: Movie }) => (
-    <View
+    <TouchableOpacity
       style={{
         width: screenWidth * 0.7,
         marginRight: 15,
@@ -82,6 +86,7 @@ export default function HomeScreen() {
         overflow: 'hidden',
         backgroundColor: '#1f2937',
       }}
+      onPress={() => router.push(`./movie/[id]/${item.id}`)} // Navigate to MovieDetailPage
     >
       <Image
         source={{ uri: item.imageUrl }}
@@ -94,9 +99,7 @@ export default function HomeScreen() {
         </Text>
         <Text style={{ color: '#9ca3af', fontSize: 12 }}>{item.duration}</Text>
       </View>
-    </View>
-
-    
+    </TouchableOpacity>
   );
 
   return (
