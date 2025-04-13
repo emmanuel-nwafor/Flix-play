@@ -1,134 +1,140 @@
-import { SafeAreaView, ScrollView, View, TouchableOpacity, Text, StyleSheet, FlatList } from "react-native";
-import HeaderTitle from "../components/HeaderTitle";
-import LatestMovie from "../components/LatestMovies";
-import UpcomingMovies from "../components/UpcomingMovies";
-import { Link } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";  // Import Ionicons (or your preferred icon library)
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView } from 'react-native';
+import axios from 'axios';
+import { Ionicons } from '@expo/vector-icons';
 
-export default function Index() {
-  // Define a mapping for genres to icons
-  const genreIcons: { [key: string]: string } = {
-    Home: "home",
-    Western: "map",
-    Movies: "film",
-    Horror: "skull",
-    Fantasy: "planet",
+const genreList = ["Home", "Western", "Movies", "Horror", "Fantasy"] as const;
+type Genre = typeof genreList[number];
+
+const genreIcons: Record<Genre, keyof typeof Ionicons.glyphMap> = {
+  Home: 'home',
+  Western: 'map',
+  Movies: 'film',
+  Horror: 'skull',
+  Fantasy: 'planet',
+};
+
+interface Movie {
+  title: string;
+  imageUrl: string;
+  duration: string;
+}
+
+const screenWidth = Dimensions.get('window').width;
+
+export default function HomeScreen() {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchMovies = async () => {
+    try {
+      const response = await axios.get(
+        'https://api.themoviedb.org/3/movie/popular',
+        {
+          params: {
+            api_key: '7011b5acfc7ee4ea8bc216e0947cfe24',
+            language: 'en-US',
+            page: 1,
+          },
+        }
+      );
+
+      const topFive: Movie[] = response.data.results.slice(0, 5).map((movie: any) => ({
+        title: movie.title,
+        imageUrl: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+        duration: '2hrs',
+      }));
+
+      setMovies(topFive);
+    } catch (error) {
+      console.error('Error fetching movies:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  useEffect(() => {
+    fetchMovies();
+  }, []);
+
+  const renderGenre = ({ item }: { item: Genre }) => (
+    <TouchableOpacity style={{ alignItems: 'center', marginHorizontal: 10 }}>
+      <View
+        style={{
+          backgroundColor: '#111827',
+          borderRadius: 20,
+          padding: 20,
+          marginBottom: 5,
+        }}
+      >
+        <Ionicons name={genreIcons[item]} size={24} color="#fff" />
+      </View>
+      <Text style={{ color: '#fff' }}>{item}</Text>
+    </TouchableOpacity>
+  );
+
+  const renderMovie = ({ item }: { item: Movie }) => (
+    <View
+      style={{
+        width: screenWidth * 0.7,
+        marginRight: 15,
+        borderRadius: 26,
+        overflow: 'hidden',
+        backgroundColor: '#1f2937',
+      }}
+    >
+      <Image
+        source={{ uri: item.imageUrl }}
+        style={{ width: '100%', height: 350 }}
+        resizeMode="cover"
+      />
+      <View style={{ padding: 20, flex: 1, justifyContent: "space-between", flexDirection: "row", alignItems: "center" }}>
+        <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }} numberOfLines={1}>
+          {item.title}
+        </Text>
+        <Text style={{ color: '#9ca3af', fontSize: 12 }}>{item.duration}</Text>
+      </View>
+    </View>
+
+    
+  );
+
   return (
-    <ScrollView style={{ backgroundColor: "#000" }}>
-      <SafeAreaView style={{ flex: 1, padding: 10 }}>
-        <View>
-          <Text
-            style={{
-              color: "white",
-              margin: 10,
-              marginBottom: 20,
-              fontSize: 28,
-              fontWeight: "bold",
-            }}
-          >
-            Discover Your Next Favourite Movie 🎞
-          </Text>
-        </View>
+    <ScrollView style={{ flex: 1, backgroundColor: '#000', padding: 20, paddingHorizontal: 15 }}>
+      {/* Header */}
+      <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+        <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#fff', margin: 15, flex: 1, alignItems: "center", justifyContent: "center" }}>
+          Welcome To Flix Play <Ionicons name="pause" size={50} color="green" />
+        </Text>
+      </View>
 
-        <View style={styles.genreContainer}>
-          {["Home", "Western", "Movies", "Horror", "Fantasy"].map((genre, index) => (
-            <View key={index} style={styles.genreButtonContainer}>
-              <TouchableOpacity
-                style={styles.genreButton}
-                onPress={() => {
-                  console.log(`${genre} clicked`);
-                }}
-              >
-                <HeaderTitle title={genre} iconName={genreIcons[genre]} />
-              </TouchableOpacity>
-            </View>
-          ))}
-        </View>
+      {/* Genre Section */}
+      <View style={{ marginBottom: 30 }}>
+        <FlatList
+          horizontal
+          data={genreList}
+          keyExtractor={(item) => item}
+          renderItem={renderGenre}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
 
-        {/* Horizontal scroll of Latest Movies */}
-        <View style={styles.moviesSectionContainer}>
-          <View style={styles.minicontainer}>
-            <Text style={styles.sectionTitle}>Latest Movies</Text>
-            <Link style={{ color: "green", fontSize: 17 }} href={"/screens/latestMovies"}>
-              See all
-            </Link>
-          </View>          
-          
-          <FlatList
-            data={[
-              { imageUrl: "https://i.pinimg.com/474x/ae/3d/dd/ae3dddf605a6113b4dc7dc7b3826e931.jpg", title: "Deadpool and Wolverine", duration: "2hrs 10mins" },
-              { imageUrl: "https://i.pinimg.com/474x/6f/56/8f/6f568fa303de3dff2b710021f8a1d3e5.jpg", title: "Avatar The Last Airbender", duration: "2hrs" },
-              { imageUrl: "https://i.pinimg.com/236x/c9/ac/f9/c9acf90a10bdc3566cd5f744caf5a56f.jpg", title: "School for Good and Evil", duration: "2hrs" },
-              { imageUrl: "https://i.pinimg.com/474x/1a/12/e4/1a12e43e9f2083ffca2174bdaeaa2968.jpg", title: "Dune", duration: "2hrs" },
-              { imageUrl: "https://i.pinimg.com/474x/8c/f1/1b/8cf11b0531c0e45746302a14c34f38bb.jpg", title: "Joker", duration: "2hrs" },
-            ]}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <LatestMovie imageUrl={item.imageUrl} title={item.title} duration={item.duration} />
-            )}
-          />
-        </View>
-
-        {/* Horizontal scroll of Upcoming Movies */}
-        <View style={styles.moviesSectionContainer}>
-          <Text style={styles.sectionTitle}>Upcoming Movies</Text>
-          <FlatList
-            data={[
-              { imageUrl: "https://i.pinimg.com/236x/2d/e1/b0/2de1b074f4ae8051ab2b9dfbfc5ed907.jpg", title: "Thunderbolts", trailer: "2hrs 10mins" },
-              { imageUrl: "https://i.pinimg.com/474x/60/34/63/603463d250bb2567f202279357746547.jpg", title: "Jolt", trailer: "2hrs" },
-              { imageUrl: "https://i.pinimg.com/474x/fc/0f/7d/fc0f7dba4eaafacdd3d8558b0047128e.jpg", title: "Love Hurts", trailer: "2hrs" },
-              { imageUrl: "https://i.pinimg.com/474x/44/36/b2/4436b293af487f044b6aa1321381774c.jpg", title: "Superman", trailer: "2hrs" },
-              { imageUrl: "https://i.pinimg.com/474x/e8/98/0a/e8980a942e6108f11f8f89db2100122d.jpg", title: "Gladiator 2", trailer: "2hrs" },
-            ]}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <UpcomingMovies imageUrl={item.imageUrl} title={item.title} trailer={item.trailer} />
-            )}
-          />
-        </View>
-      </SafeAreaView>
+      {/* Latest Movies Section */}
+      <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff', margin: 15 }}>
+        Latest Movies
+      </Text>
+      {loading ? (
+        <ActivityIndicator size="large" color="green" />
+      ) : (
+        <FlatList
+          horizontal
+          data={movies}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={renderMovie}
+          showsHorizontalScrollIndicator={false}
+          style={{ padding: 15 }}
+        />
+      )}
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  genreContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    gap: 8,
-    overflow: "hidden",
-  },
-  genreButtonContainer: {
-    width: 100,
-  },
-  genreButton: {
-    backgroundColor: "#333",
-    padding: 10,
-    borderRadius: 100,
-    margin: 4,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  moviesSectionContainer: {
-    marginTop: 20,
-  },
-  sectionTitle: {
-    color: "white",
-    fontWeight: "bold",
-    margin: 10,
-    fontSize: 28,
-  },
-  minicontainer: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
-  }
-});
