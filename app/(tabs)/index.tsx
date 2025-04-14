@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'expo-router';
-import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+  Dimensions,
+  ScrollView,
+} from 'react-native';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 
-const genreList = ["Home", "Western", "Movies", "Horror", "Fantasy"] as const;
+const genreList = ['Home', 'Western', 'Movies', 'Horror', 'Fantasy'] as const;
 type Genre = typeof genreList[number];
 
 const genreIcons: Record<Genre, keyof typeof Ionicons.glyphMap> = {
@@ -15,13 +24,7 @@ const genreIcons: Record<Genre, keyof typeof Ionicons.glyphMap> = {
   Fantasy: 'planet',
 };
 
-interface Movie {
-  title: string;
-  imageUrl: string;
-  duration: string;
-}
-
-interface Tvseries {
+interface MediaItem {
   title: string;
   imageUrl: string;
   duration: string;
@@ -30,77 +33,59 @@ interface Tvseries {
 const screenWidth = Dimensions.get('window').width;
 
 export default function HomeScreen() {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [upcomingMovies, setUpcomingMovies] = useState<Movie[]>([]);
-  const [tvSeries, settvSeries] = useState<Tvseries[]>([]);
+  const [movies, setMovies] = useState<MediaItem[]>([]);
+  const [upcomingMovies, setUpcomingMovies] = useState<MediaItem[]>([]);
+  const [tvSeries, setTvSeries] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  const fetchTvseries = async () => {
-    try {
-      const series = await axios.get(
-        'https://api.themoviedb.org/3/tv/popular',
-        {
-          params: {
-            api_key: '7011b5acfc7ee4ea8bc216e0947cfe24',
-            language: 'en-us',
-            page: 1,
-          },
-        }
-        
-      )
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
-  const fetchMovies = async () => {
+  const API_KEY = '7011b5acfc7ee4ea8bc216e0947cfe24';
+  const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
+
+  const fetchData = async () => {
     try {
-      const popularResponse = await axios.get(
-        'https://api.themoviedb.org/3/movie/popular',
-        {
+      const [popularMovies, upcomingMovies, popularSeries] = await Promise.all([
+        axios.get('https://api.themoviedb.org/3/movie/popular', {
           params: {
-            api_key: '7011b5acfc7ee4ea8bc216e0947cfe24',
+            api_key: API_KEY,
             language: 'en-US',
             page: 1,
           },
-        }
-      );
-
-      const topFive: Movie[] = popularResponse.data.results.slice(0, 5).map((movie: any) => ({
-        title: movie.title,
-        imageUrl: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-        duration: '2hrs',
-      }));
-
-      setMovies(topFive);
-
-      const upcomingResponse = await axios.get(
-        'https://api.themoviedb.org/3/movie/upcoming',
-        {
+        }),
+        axios.get('https://api.themoviedb.org/3/movie/upcoming', {
           params: {
-            api_key: '7011b5acfc7ee4ea8bc216e0947cfe24',
+            api_key: API_KEY,
             language: 'en-US',
             page: 1,
           },
-        }
-      );
+        }),
+        axios.get('https://api.themoviedb.org/3/tv/popular', {
+          params: {
+            api_key: API_KEY,
+            language: 'en-US',
+            page: 1,
+          },
+        }),
+      ]);
 
-      const upcomingTopFive: Movie[] = upcomingResponse.data.results.slice(0, 5).map((movie: any) => ({
-        title: movie.title,
-        imageUrl: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-        duration: '2hrs',
-      }));
+      const mapResults = (items: any[]): MediaItem[] =>
+        items.slice(0, 5).map((item) => ({
+          title: item.title || item.name,
+          imageUrl: `${BASE_IMAGE_URL}${item.poster_path}`,
+          duration: '2hrs',
+        }));
 
-      setUpcomingMovies(upcomingTopFive);
+      setMovies(mapResults(popularMovies.data.results));
+      setUpcomingMovies(mapResults(upcomingMovies.data.results));
+      setTvSeries(mapResults(popularSeries.data.results));
     } catch (error) {
-      console.error('Error fetching movies:', error);
+      console.error('Error fetching media data:', error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchMovies();
+    fetchData();
   }, []);
 
   const renderGenre = ({ item }: { item: Genre }) => (
@@ -119,7 +104,7 @@ export default function HomeScreen() {
     </TouchableOpacity>
   );
 
-  const renderMovie = ({ item }: { item: Movie }) => (
+  const renderMovie = ({ item }: { item: MediaItem }) => (
     <View
       style={{
         width: screenWidth * 0.7,
@@ -134,8 +119,18 @@ export default function HomeScreen() {
         style={{ width: '100%', height: 350 }}
         resizeMode="cover"
       />
-      <View style={{ padding: 20, flex: 1, justifyContent: "space-between", flexDirection: "row", alignItems: "center" }}>
-        <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }} numberOfLines={1}>
+      <View
+        style={{
+          padding: 20,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Text
+          style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}
+          numberOfLines={1}
+        >
           {item.title}
         </Text>
         <Text style={{ color: '#9ca3af', fontSize: 12 }}>{item.duration}</Text>
@@ -143,11 +138,67 @@ export default function HomeScreen() {
     </View>
   );
 
+  const SectionHeader = ({ title, link }: { title: string; link: string }) => (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 20,
+          fontWeight: 'bold',
+          color: '#fff',
+          margin: 15,
+        }}
+      >
+        {title}
+      </Text>
+      <Link href={"/tvSeries"} style={{ fontSize: 15, color: 'green', margin: 15 }}>
+        See all
+      </Link>
+    </View>
+  );
+
+  const renderSection = (
+    title: string,
+    link: string,
+    data: MediaItem[],
+    isLoading: boolean
+  ) => (
+    <>
+      <SectionHeader title={title} link={link} />
+      {isLoading ? (
+        <ActivityIndicator size="large" color="green" />
+      ) : (
+        <FlatList
+          horizontal
+          data={data}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={renderMovie}
+          showsHorizontalScrollIndicator={false}
+          style={{ padding: 15, marginBottom: 25 }}
+        />
+      )}
+    </>
+  );
+
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#000', padding: 20, paddingHorizontal: 15 }}>
-      {/* Header */}
-      <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#fff', margin: 15, flex: 1, alignItems: "center", justifyContent: "center" }}>
+    <ScrollView
+      style={{ flex: 1, backgroundColor: '#000', paddingHorizontal: 15 }}
+    >
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: 'bold',
+            color: '#fff',
+            margin: 15,
+            flex: 1,
+          }}
+        >
           Welcome To Flix Play 🎬
         </Text>
       </View>
@@ -163,73 +214,10 @@ export default function HomeScreen() {
         />
       </View>
 
-      {/* Latest Movies Section */}
-      <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff', margin: 15 }}>
-          Top Movies 📽
-        </Text>
-        <Link href={"./latestMovies"} style={{ fontSize: 15, color: 'green', margin: 15 }}>
-          See all
-        </Link>
-      </View>
-      {loading ? (
-        <ActivityIndicator size="large" color="green" />
-      ) : (
-        <FlatList
-          horizontal
-          data={movies}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={renderMovie}
-          showsHorizontalScrollIndicator={false}
-          style={{ padding: 15 }}
-        />
-      )}
-
-      {/* TV Series Section */}
-      <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff', margin: 15 }}>
-          TV Series 📺
-        </Text>
-        <Link href={"./tvSeries"} style={{ fontSize: 15, color: 'green', margin: 15 }}>
-          See all
-        </Link>
-      </View>
-
-      {loading ? (
-        <ActivityIndicator size="large" color="green" />
-      ) : (
-        <FlatList
-          horizontal
-          data={upcomingMovies}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={renderMovie}
-          showsHorizontalScrollIndicator={false}
-          style={{ padding: 15, marginBottom: 25 }}
-        />
-      )}
-
-      {/* Upcoming Movies Section */}
-      <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff', margin: 15 }}>
-          Upcoming Movies 📺
-        </Text>
-        <Link href={"./upcomingMovies"} style={{ fontSize: 15, color: 'green', margin: 15 }}>
-          See all
-        </Link>
-      </View>
-
-      {loading ? (
-        <ActivityIndicator size="large" color="green" />
-      ) : (
-        <FlatList
-          horizontal
-          data={upcomingMovies}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={renderMovie}
-          showsHorizontalScrollIndicator={false}
-          style={{ padding: 15, marginBottom: 25 }}
-        />
-      )}
+      {/* Sections */}
+      {renderSection('Top Movies 📽', './latestMovies', movies, loading)}
+      {renderSection('TV Series 📺', './tvSeries', tvSeries, loading)}
+      {renderSection('Upcoming Movies 🎞', './upcomingMovies', upcomingMovies, loading)}
     </ScrollView>
   );
 }
