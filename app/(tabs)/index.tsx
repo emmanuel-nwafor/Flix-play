@@ -21,12 +21,37 @@ interface Movie {
   duration: string;
 }
 
+interface Tvseries {
+  title: string;
+  imageUrl: string;
+  duration: string;
+}
+
 const screenWidth = Dimensions.get('window').width;
 
 export default function HomeScreen() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [upcomingMovies, setUpcomingMovies] = useState<Movie[]>([]);
+  const [tvSeries, settvSeries] = useState<Tvseries[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  const fetchTvseries = async () => {
+    try {
+      const series = await axios.get(
+        'https://api.themoviedb.org/3/tv/popular',
+        {
+          params: {
+            api_key: '7011b5acfc7ee4ea8bc216e0947cfe24',
+            language: 'en-us',
+            page: 1,
+          },
+        }
+        
+      )
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const fetchMovies = async () => {
     try {
@@ -157,6 +182,29 @@ export default function HomeScreen() {
           renderItem={renderMovie}
           showsHorizontalScrollIndicator={false}
           style={{ padding: 15 }}
+        />
+      )}
+
+      {/* TV Series Section */}
+      <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff', margin: 15 }}>
+          TV Series 📺
+        </Text>
+        <Link href={"./tvSeries"} style={{ fontSize: 15, color: 'green', margin: 15 }}>
+          See all
+        </Link>
+      </View>
+
+      {loading ? (
+        <ActivityIndicator size="large" color="green" />
+      ) : (
+        <FlatList
+          horizontal
+          data={upcomingMovies}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={renderMovie}
+          showsHorizontalScrollIndicator={false}
+          style={{ padding: 15, marginBottom: 25 }}
         />
       )}
 

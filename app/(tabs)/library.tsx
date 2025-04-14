@@ -1,16 +1,29 @@
-import { View, Text } from 'react-native'
+import { View, Text, ScrollView } from 'react-native'
 
 export default function library() {
   return (
-    <View style={{
+    <ScrollView style={{
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#1b1b1b",
+
+        backgroundColor: "#000",
       }}>
-      <Text>
-        Hello Library
-      </Text>
-    </View>
+      <View style={{ 
+         justifyContent: "center",
+        alignItems: "center",
+       }}>
+        <View style={{ backgroundColor: "green", padding: 30 }}>
+          <Text>View 1</Text>
+        </View>
+        <View style={{ backgroundColor: "green", padding: 30 }}>
+          <Text>View 2</Text>
+        </View>
+        <View style={{ backgroundColor: "green", padding: 30 }}>
+          <Text>View 3</Text>
+        </View>
+        <View style={{ backgroundColor: "green", padding: 30 }}>
+          <Text>View 4</Text>
+        </View>
+      </View>
+    </ScrollView>
   )
 }

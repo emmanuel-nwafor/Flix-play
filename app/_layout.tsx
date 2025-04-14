@@ -30,6 +30,15 @@ export default function RootLayout() {
           }}
         />
 
+        <Stack.Screen
+          name="tvSeries"
+          options={{
+            headerShown: true,
+            headerTintColor: "#fff", // Changes the header text color to Tomato
+            title: "TV Series", // Custom title for the screen
+          }}
+        />
+
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
