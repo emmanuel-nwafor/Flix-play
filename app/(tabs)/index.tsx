@@ -156,7 +156,7 @@ export default function HomeScreen() {
       >
         {title}
       </Text>
-      <Link href={"/tvSeries"} style={{ fontSize: 15, color: 'green', margin: 15 }}>
+      <Link href={link} style={{ fontSize: 15, color: 'green', margin: 15 }}>
         See all
       </Link>
     </View>
