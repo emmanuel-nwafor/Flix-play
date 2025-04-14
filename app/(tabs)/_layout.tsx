@@ -27,6 +27,7 @@ export default function TabsLayout() {
             <Ionicons name="home-outline" size={size} color={color} />
           ),
           title: "Flix Play",
+          headerTintColor: "white"
         }}
       />
       <Tabs.Screen
@@ -36,6 +37,7 @@ export default function TabsLayout() {
             <Ionicons name="person-circle" size={size} color={color} />
           ),
           title: "Profile",
+          headerTintColor: "white"
         }}
       />
       <Tabs.Screen
@@ -45,6 +47,7 @@ export default function TabsLayout() {
             <Ionicons name="library-outline" size={size} color={color} />
           ),
           title: "Library",
+          headerTintColor: "white"
         }}
       />
       <Tabs.Screen
@@ -54,6 +57,7 @@ export default function TabsLayout() {
             <Ionicons name="book-outline" size={size} color={color} />
           ),
           title: "Shelf",
+          headerTintColor: "white"
         }}
       />
     </Tabs>
