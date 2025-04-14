@@ -8,8 +8,13 @@ import {
   SafeAreaView,
   ActivityIndicator,
   TextInput,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import axios from 'axios';
+
+const screenWidth = Dimensions.get('window').width;
 
 const UpcomingMoviesPage = () => {
   const [movies, setMovies] = useState<any[]>([]);
@@ -24,12 +29,19 @@ const UpcomingMoviesPage = () => {
         let page = 1;
         let totalPages = 1;
 
+        const today = new Date();
+
         while (page <= totalPages) {
           const response = await axios.get(
             `https://api.themoviedb.org/3/movie/upcoming?api_key=7011b5acfc7ee4ea8bc216e0947cfe24&language=en-US&page=${page}`
           );
 
-          allMovies.push(...response.data.results);
+          const futureMovies = response.data.results.filter((movie: any) => {
+            const releaseDate = new Date(movie.release_date);
+            return releaseDate > today;
+          });
+
+          allMovies.push(...futureMovies);
           totalPages = response.data.total_pages;
           page++;
         }
@@ -88,13 +100,36 @@ const UpcomingMoviesPage = () => {
         />
       </View>
 
+      {/* Genre Selection */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.genreScroll}
+        contentContainerStyle={{ paddingHorizontal: 10 }}
+      >
+        {['Action', 'Comedy', 'Fantasy', 'Drama', 'Sci-Fi'].map((genre) => (
+          <TouchableOpacity
+            key={genre}
+            style={styles.seriesSelectionBtn}
+            activeOpacity={0.7}
+            onPress={() => {
+              // Handle genre selection (optional future feature)
+              console.log(`Selected genre: ${genre}`);
+            }}
+          >
+            <Text style={styles.text}>{genre}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      {/* Movie List */}
       {loading ? (
         <ActivityIndicator size="large" color="green" />
       ) : (
         <FlatList
           data={filteredMovies}
           keyExtractor={(item) => item.id.toString()}
-          numColumns={2}
+          numColumns={screenWidth > 600 ? 3 : 2}
           columnWrapperStyle={styles.row}
           renderItem={renderMovieItem}
           contentContainerStyle={{ paddingBottom: 30 }}
@@ -150,10 +185,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   movieCard: {
-    width: '48%',
+    width: screenWidth > 600 ? '30%' : '48%',
     backgroundColor: '#111',
     borderRadius: 26,
     overflow: 'hidden',
+    marginBottom: 15,
   },
   poster: {
     width: '100%',
@@ -162,7 +198,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
   },
   details: {
-    padding: 8,
+    padding: 20,
   },
   title: {
     color: '#fff',
@@ -173,5 +209,23 @@ const styles = StyleSheet.create({
     color: '#ccc',
     fontSize: 13,
     marginTop: 4,
+  },
+  genreScroll: {
+    width: '100%',
+    marginBottom: 15,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingVertical: 5,
+  },
+  seriesSelectionBtn: {
+    borderRadius: 100,
+    backgroundColor: 'green',
+    marginRight: 10,
+    marginBottom: 10,
+    padding: 20
+  },
+  text: {
+    color: 'white',
+    fontWeight: '600',
   },
 });

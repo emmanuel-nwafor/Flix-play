@@ -18,7 +18,7 @@ export default function TabsLayout() {
           justifyContent: "center",
         },
         tabBarActiveTintColor: "#fff",
-        tabBarInactiveTintColor: "#888",
+        tabBarInactiveTintColor: "green",
       }}
     >
       <Tabs.Screen

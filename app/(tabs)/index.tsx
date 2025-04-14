@@ -1,17 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'expo-router';
-import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  TouchableOpacity,
-  ActivityIndicator,
-  Dimensions,
-  ScrollView,
-} from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView } from 'react-native';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 const genreList = ['Home', 'Western', 'Movies', 'Horror', 'Fantasy'] as const;
 type Genre = typeof genreList[number];
@@ -40,6 +31,8 @@ export default function HomeScreen() {
 
   const API_KEY = '7011b5acfc7ee4ea8bc216e0947cfe24';
   const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
+
+  const router = useRouter();
 
   const fetchData = async () => {
     try {
@@ -127,10 +120,7 @@ export default function HomeScreen() {
           alignItems: 'center',
         }}
       >
-        <Text
-          style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}
-          numberOfLines={1}
-        >
+        <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }} numberOfLines={1}>
           {item.title}
         </Text>
         <Text style={{ color: '#9ca3af', fontSize: 12 }}>{item.duration}</Text>
@@ -138,45 +128,30 @@ export default function HomeScreen() {
     </View>
   );
 
-  const SectionHeader = ({ title, link }: { title: string; link: string }) => (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 20,
-          fontWeight: 'bold',
-          color: '#fff',
-          margin: 15,
-        }}
-      >
-        {title}
-      </Text>
-      <Link href={link} style={{ fontSize: 15, color: 'green', margin: 15 }}>
-        See all
-      </Link>
+  const SectionHeader = ({ title, onSeeAll }: { title: string; onSeeAll: () => void }) => (
+    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+      <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff', margin: 15 }}>{title}</Text>
+      <TouchableOpacity onPress={onSeeAll}>
+        <Text style={{ fontSize: 15, color: 'green', margin: 15 }}>See all</Text>
+      </TouchableOpacity>
     </View>
   );
 
   const renderSection = (
     title: string,
-    link: string,
+    navigateTo: string,
     data: MediaItem[],
     isLoading: boolean
   ) => (
     <>
-      <SectionHeader title={title} link={link} />
+      <SectionHeader title={title} onSeeAll={() => router.push(navigateTo)} />
       {isLoading ? (
         <ActivityIndicator size="large" color="green" />
       ) : (
         <FlatList
           horizontal
           data={data}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(_, index) => index.toString()}
           renderItem={renderMovie}
           showsHorizontalScrollIndicator={false}
           style={{ padding: 15, marginBottom: 25 }}
@@ -186,9 +161,7 @@ export default function HomeScreen() {
   );
 
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: '#000', paddingHorizontal: 15 }}
-    >
+    <ScrollView style={{ flex: 1, backgroundColor: '#000', paddingHorizontal: 15 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Text
           style={{
@@ -215,9 +188,9 @@ export default function HomeScreen() {
       </View>
 
       {/* Sections */}
-      {renderSection('Top Movies 📽', './latestMovies', movies, loading)}
-      {renderSection('TV Series 📺', './tvSeries', tvSeries, loading)}
-      {renderSection('Upcoming Movies 🎞', './upcomingMovies', upcomingMovies, loading)}
+      {renderSection('Top Movies 📽', '/latestMovies', movies, loading)}
+      {renderSection('TV Series 📺', '/tvSeries', tvSeries, loading)}
+      {renderSection('Upcoming Movies 🎞', '/upcomingMovies', upcomingMovies, loading)}
     </ScrollView>
   );
 }

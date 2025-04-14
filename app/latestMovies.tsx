@@ -78,8 +78,8 @@ const UpcomingMoviesPage = () => {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.pageTitle}>Upcoming Movies</Text>
-        <Text style={styles.subTitle}>Get ready for the next big hits!</Text>
+        <Text style={styles.pageTitle}>Top Movies</Text>
+        <Text style={styles.subTitle}>Top big hits for you!</Text>
 
         <TextInput
           placeholder="Search upcoming movies..."
@@ -105,7 +105,7 @@ const UpcomingMoviesPage = () => {
                 <Text style={styles.text}>Sci-Fi</Text>
             </TouchableOpacity>
         </ScrollView>
-        
+
       </View>
 
       {loading ? (
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
   },
   details: {
-    padding: 8,
+    padding: 20,
   },
   title: {
     color: '#fff',

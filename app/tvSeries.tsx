@@ -112,7 +112,7 @@ const TvSeries = () => {
           <TouchableOpacity style={styles.seriesSelectionBtn}>
             <Text style={styles.text}>Sci-Fi</Text>
           </TouchableOpacity>
-          
+
         </ScrollView>
       </View>
 
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     height: 250,
   },
   details: {
-    padding: 8,
+    padding: 20,
   },
   title: {
     color: '#fff',

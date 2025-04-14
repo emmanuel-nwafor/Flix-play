@@ -18,7 +18,7 @@ export default function RootLayout() {
           options={{
             headerShown: true,
             headerTintColor: "#fff", // Changes the header text color to Tomato
-            title: "Latest Movies", // Custom title for the screen
+            title: "Top Movies", // Custom title for the screen
           }}
         />
         <Stack.Screen
