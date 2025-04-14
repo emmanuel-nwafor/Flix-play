@@ -27,7 +27,7 @@ export default function TabsLayout() {
             <Ionicons name="home-outline" size={size} color={color} />
           ),
           title: "Flix Play",
-          headerTintColor: "white"
+          headerTintColor: "gray",
         }}
       />
       <Tabs.Screen
