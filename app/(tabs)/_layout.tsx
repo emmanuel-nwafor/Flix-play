@@ -8,7 +8,6 @@ export default function TabsLayout() {
         headerShown: true,
         headerStyle: {
           backgroundColor: "#000",
-          shadowColor: "#1b1b1b",
         },
         tabBarStyle: {
           backgroundColor: "#000",
