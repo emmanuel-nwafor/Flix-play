@@ -19,6 +19,8 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 const TvSeries = () => {
   const [series, setSeries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchText, setSearchText] = useState('');
+  const [filteredSeries, setFilteredSeries] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchTVSeries = async () => {
@@ -27,7 +29,7 @@ const TvSeries = () => {
         let page = 1;
         let totalPages = 1;
 
-        while (page <= totalPages && page <= 5) { // limit to 5 pages
+        while (page <= totalPages && page <= 5) {
           const response = await axios.get(`${BASE_URL}/tv/popular`, {
             params: {
               api_key: API_KEY,
@@ -43,6 +45,7 @@ const TvSeries = () => {
         }
 
         setSeries(allSeries);
+        setFilteredSeries(allSeries); // initialize filtered list
       } catch (error) {
         console.error('Failed to fetch TV series:', error);
       } finally {
@@ -52,6 +55,18 @@ const TvSeries = () => {
 
     fetchTVSeries();
   }, []);
+
+  useEffect(() => {
+    if (!searchText.trim()) {
+      setFilteredSeries(series);
+    } else {
+      const lowerSearch = searchText.toLowerCase();
+      const filtered = series.filter((item) =>
+        item.name.toLowerCase().includes(lowerSearch)
+      );
+      setFilteredSeries(filtered);
+    }
+  }, [searchText, series]);
 
   const renderSeriesItem = ({ item }: { item: any }) => (
     <View style={styles.movieCard}>
@@ -74,8 +89,10 @@ const TvSeries = () => {
         <Text style={styles.subTitle}>Binge-worthy shows to watch now</Text>
 
         <TextInput
-          placeholder='Search TV series...'
+          placeholder="Search TV series..."
           placeholderTextColor="#999"
+          value={searchText}
+          onChangeText={(text) => setSearchText(text)}
           style={styles.searchInput}
         />
 
@@ -92,9 +109,6 @@ const TvSeries = () => {
           <TouchableOpacity style={styles.seriesSelectionBtn}>
             <Text style={styles.text}>Drama</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.seriesSelectionBtn}>
-            <Text style={styles.text}>Sci-Fi</Text>
-          </TouchableOpacity>
         </ScrollView>
       </View>
 
@@ -102,12 +116,17 @@ const TvSeries = () => {
         <ActivityIndicator size="large" color="green" />
       ) : (
         <FlatList
-          data={series}
+          data={filteredSeries}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
           columnWrapperStyle={styles.row}
           renderItem={renderSeriesItem}
           contentContainerStyle={{ paddingBottom: 30 }}
+          ListEmptyComponent={
+            <Text style={{ color: '#aaa', textAlign: 'center', marginTop: 30 }}>
+              No TV series found.
+            </Text>
+          }
         />
       )}
     </SafeAreaView>
