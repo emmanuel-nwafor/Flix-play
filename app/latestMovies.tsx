@@ -12,6 +12,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import axios from 'axios';
+import { Link } from 'expo-router';
 
 const UpcomingMoviesPage = () => {
   const [movies, setMovies] = useState<any[]>([]);
@@ -89,21 +90,31 @@ const UpcomingMoviesPage = () => {
           style={styles.searchInput}
         />
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.genreScroll}>
+          <Link href="/action" asChild>
             <TouchableOpacity style={styles.seriesSelectionBtn}>
               <Text style={styles.text}>Action</Text>
             </TouchableOpacity>
+          </Link>
+          <Link href="/comedy" asChild>
             <TouchableOpacity style={styles.seriesSelectionBtn}>
               <Text style={styles.text}>Comedy</Text>
             </TouchableOpacity>
+          </Link>
+          <Link href="/fantasy" asChild>
             <TouchableOpacity style={styles.seriesSelectionBtn}>
               <Text style={styles.text}>Fantasy</Text>
             </TouchableOpacity>
+          </Link>
+          <Link href="/drama" asChild>
             <TouchableOpacity style={styles.seriesSelectionBtn}>
               <Text style={styles.text}>Drama</Text>
             </TouchableOpacity>
+          </Link>
+          <Link href="/sci-fi" asChild>
             <TouchableOpacity style={styles.seriesSelectionBtn}>
-                <Text style={styles.text}>Sci-Fi</Text>
+              <Text style={styles.text}>Sci-Fi</Text>
             </TouchableOpacity>
+          </Link>
         </ScrollView>
 
       </View>

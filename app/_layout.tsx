@@ -17,16 +17,16 @@ export default function RootLayout() {
           name="latestMovies"
           options={{
             headerShown: true,
-            headerTintColor: "#fff", // Changes the header text color to Tomato
-            title: "Top Movies", // Custom title for the screen
+            headerTintColor: "#fff", 
+            title: "Top Movies", 
           }}
         />
         <Stack.Screen
           name="upcomingMovies"
           options={{
             headerShown: true,
-            headerTintColor: "#fff", // Changes the header text color to Tomato
-            title: "Upcoming Movies", // Custom title for the screen
+            headerTintColor: "#fff", 
+            title: "Upcoming Movies", 
           }}
         />
 
@@ -34,8 +34,49 @@ export default function RootLayout() {
           name="tvSeries"
           options={{
             headerShown: true,
-            headerTintColor: "#fff", // Changes the header text color to Tomato
-            title: "TV Series", // Custom title for the screen
+            headerTintColor: "#fff", 
+            title: "TV Series", 
+          }}
+        />
+
+        <Stack.Screen
+          name="action"
+          options={{
+            headerShown: true,
+            headerTintColor: "#fff", 
+            title: "Actiion"
+          }}
+        />
+        <Stack.Screen
+          name="comedy"
+          options={{
+            headerShown: true,
+            headerTintColor: "#fff", 
+            title: "Comedy", 
+          }}
+        />
+        <Stack.Screen
+          name="fantasy"
+          options={{
+            headerShown: true,
+            headerTintColor: "#fff", 
+            title: "Fanstasy", 
+          }}
+        />
+        <Stack.Screen
+          name="sci-fi"
+          options={{
+            headerShown: true,
+            headerTintColor: "#fff", 
+            title: "Sci-Fi", 
+          }}
+        />
+        <Stack.Screen
+          name="drama"
+          options={{
+            headerShown: true,
+            headerTintColor: "#fff", 
+            title: "Drama", 
           }}
         />
 
