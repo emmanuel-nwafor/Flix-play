@@ -109,6 +109,10 @@ const TvSeries = () => {
           <TouchableOpacity style={styles.seriesSelectionBtn}>
             <Text style={styles.text}>Drama</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.seriesSelectionBtn}>
+            <Text style={styles.text}>Sci-Fi</Text>
+          </TouchableOpacity>
+          
         </ScrollView>
       </View>
 

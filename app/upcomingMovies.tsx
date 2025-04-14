@@ -7,11 +7,14 @@ import {
   Image,
   SafeAreaView,
   ActivityIndicator,
+  TextInput,
 } from 'react-native';
 import axios from 'axios';
 
 const UpcomingMoviesPage = () => {
   const [movies, setMovies] = useState<any[]>([]);
+  const [filteredMovies, setFilteredMovies] = useState<any[]>([]);
+  const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,6 +35,7 @@ const UpcomingMoviesPage = () => {
         }
 
         setMovies(allMovies);
+        setFilteredMovies(allMovies);
       } catch (error) {
         console.error('Failed to fetch upcoming movies:', error);
       } finally {
@@ -41,6 +45,18 @@ const UpcomingMoviesPage = () => {
 
     fetchUpcomingMovies();
   }, []);
+
+  useEffect(() => {
+    if (!searchText.trim()) {
+      setFilteredMovies(movies);
+    } else {
+      const lowerText = searchText.toLowerCase();
+      const filtered = movies.filter((movie) =>
+        movie.title.toLowerCase().includes(lowerText)
+      );
+      setFilteredMovies(filtered);
+    }
+  }, [searchText, movies]);
 
   const renderMovieItem = ({ item }: { item: any }) => (
     <View style={styles.movieCard}>
@@ -62,18 +78,31 @@ const UpcomingMoviesPage = () => {
       <View style={styles.header}>
         <Text style={styles.pageTitle}>Upcoming Movies</Text>
         <Text style={styles.subTitle}>Get ready for the next big hits!</Text>
+
+        <TextInput
+          placeholder="Search upcoming movies..."
+          placeholderTextColor="#999"
+          value={searchText}
+          onChangeText={(text) => setSearchText(text)}
+          style={styles.searchInput}
+        />
       </View>
 
       {loading ? (
         <ActivityIndicator size="large" color="green" />
       ) : (
         <FlatList
-          data={movies}
+          data={filteredMovies}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
           columnWrapperStyle={styles.row}
           renderItem={renderMovieItem}
           contentContainerStyle={{ paddingBottom: 30 }}
+          ListEmptyComponent={
+            <Text style={{ color: '#aaa', textAlign: 'center', marginTop: 30 }}>
+              No movies found matching your search.
+            </Text>
+          }
         />
       )}
     </SafeAreaView>
@@ -105,6 +134,16 @@ const styles = StyleSheet.create({
     fontWeight: '300',
     color: '#aaa',
     textAlign: 'center',
+    marginBottom: 15,
+  },
+  searchInput: {
+    backgroundColor: '#1a1a1a',
+    color: '#fff',
+    width: '95%',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginBottom: 15,
   },
   row: {
     justifyContent: 'space-between',

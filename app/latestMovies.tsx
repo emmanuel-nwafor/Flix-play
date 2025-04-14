@@ -1,21 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, SafeAreaView, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  SafeAreaView,
+  ActivityIndicator,
+  TextInput,
+  ScrollView,
+  TouchableOpacity
+} from 'react-native';
 import axios from 'axios';
 
-const LatestMoviesPage = () => {
+const UpcomingMoviesPage = () => {
   const [movies, setMovies] = useState<any[]>([]);
+  const [filteredMovies, setFilteredMovies] = useState<any[]>([]);
+  const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAllLatestMovies = async () => {
+    const fetchUpcomingMovies = async () => {
       try {
         const allMovies: any[] = [];
         let page = 1;
         let totalPages = 1;
 
-        while (page <= totalPages) {
+        while (page <= totalPages && page <= 5) {
           const response = await axios.get(
-            `https://api.themoviedb.org/3/movie/now_playing?api_key=7011b5acfc7ee4ea8bc216e0947cfe24&language=en-US&page=${page}`
+            `https://api.themoviedb.org/3/movie/upcoming?api_key=7011b5acfc7ee4ea8bc216e0947cfe24&language=en-US&page=${page}`
           );
 
           allMovies.push(...response.data.results);
@@ -24,15 +37,28 @@ const LatestMoviesPage = () => {
         }
 
         setMovies(allMovies);
+        setFilteredMovies(allMovies);
       } catch (error) {
-        console.error('Failed to fetch latest movies:', error);
+        console.error('Failed to fetch upcoming movies:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAllLatestMovies();
+    fetchUpcomingMovies();
   }, []);
+
+  useEffect(() => {
+    if (!searchText.trim()) {
+      setFilteredMovies(movies);
+    } else {
+      const lowerText = searchText.toLowerCase();
+      const filtered = movies.filter((movie) =>
+        movie.title.toLowerCase().includes(lowerText)
+      );
+      setFilteredMovies(filtered);
+    }
+  }, [searchText, movies]);
 
   const renderMovieItem = ({ item }: { item: any }) => (
     <View style={styles.movieCard}>
@@ -41,35 +67,69 @@ const LatestMoviesPage = () => {
         style={styles.poster}
         resizeMode="cover"
       />
-      <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
+      <View style={styles.details}>
+        <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
+        <Text style={styles.releaseDate}>Release: {item.release_date}</Text>
+      </View>
     </View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Custom Header */}
+      {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.pageTitle}>Latest Movie Releases</Text>
-        <Text style={styles.subTitle}>Catch up with the newest blockbusters!</Text>
+        <Text style={styles.pageTitle}>Upcoming Movies</Text>
+        <Text style={styles.subTitle}>Get ready for the next big hits!</Text>
+
+        <TextInput
+          placeholder="Search upcoming movies..."
+          placeholderTextColor="#999"
+          value={searchText}
+          onChangeText={(text) => setSearchText(text)}
+          style={styles.searchInput}
+        />
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.genreScroll}>
+            <TouchableOpacity style={styles.seriesSelectionBtn}>
+              <Text style={styles.text}>Action</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.seriesSelectionBtn}>
+              <Text style={styles.text}>Comedy</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.seriesSelectionBtn}>
+              <Text style={styles.text}>Fantasy</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.seriesSelectionBtn}>
+              <Text style={styles.text}>Drama</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.seriesSelectionBtn}>
+                <Text style={styles.text}>Sci-Fi</Text>
+            </TouchableOpacity>
+        </ScrollView>
+        
       </View>
 
       {loading ? (
         <ActivityIndicator size="large" color="green" />
       ) : (
         <FlatList
-          data={movies}
+          data={filteredMovies}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
           columnWrapperStyle={styles.row}
           renderItem={renderMovieItem}
           contentContainerStyle={{ paddingBottom: 30 }}
+          ListEmptyComponent={
+            <Text style={{ color: '#aaa', textAlign: 'center', marginTop: 30 }}>
+              No upcoming movies found.
+            </Text>
+          }
         />
       )}
     </SafeAreaView>
   );
 };
 
-export default LatestMoviesPage;
+export default UpcomingMoviesPage;
 
 const styles = StyleSheet.create({
   container: {
@@ -78,7 +138,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingTop: 20,
   },
-  // Header style
   header: {
     marginBottom: 20,
     alignItems: 'center',
@@ -95,6 +154,16 @@ const styles = StyleSheet.create({
     fontWeight: '300',
     color: '#aaa',
     textAlign: 'center',
+    marginBottom: 15,
+  },
+  searchInput: {
+    backgroundColor: '#1a1a1a',
+    color: '#fff',
+    width: '95%',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginBottom: 15,
   },
   row: {
     justifyContent: 'space-between',
@@ -112,10 +181,32 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
+  details: {
+    padding: 8,
+  },
   title: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
-    padding: 8,
+  },
+  releaseDate: {
+    color: '#ccc',
+    fontSize: 13,
+    marginTop: 4,
+  },
+  genreScroll: {
+    width: '100%',
+    marginBottom: 15,
+  },
+  seriesSelectionBtn: {
+    borderRadius: 100,
+    backgroundColor: 'green',
+    marginRight: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  text: {
+    color: 'white',
+    fontWeight: '600',
   },
 });
