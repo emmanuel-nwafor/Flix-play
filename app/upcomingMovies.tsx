@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   movieCard: {
     width: '48%',
     backgroundColor: '#111',
-    borderRadius: 10,
+    borderRadius: 26,
     overflow: 'hidden',
   },
   poster: {

@@ -101,7 +101,7 @@ export default function HomeScreen() {
         marginRight: 15,
         borderRadius: 26,
         overflow: 'hidden',
-        backgroundColor: '#1f2937',
+        backgroundColor: '#111',
       }}
     >
       <Image
@@ -179,7 +179,7 @@ export default function HomeScreen() {
           keyExtractor={(item, index) => index.toString()}
           renderItem={renderMovie}
           showsHorizontalScrollIndicator={false}
-          style={{ padding: 15 }}
+          style={{ padding: 15, marginBottom: 25 }}
         />
       )}
     </ScrollView>
