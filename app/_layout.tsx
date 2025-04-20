@@ -44,7 +44,7 @@ export default function RootLayout() {
           options={{
             headerShown: true,
             headerTintColor: "#fff", 
-            title: "Actiion"
+            title: "Action Movies"
           }}
         />
         <Stack.Screen
