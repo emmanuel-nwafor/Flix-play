@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView } from 'react-native';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,24 +16,32 @@ const genreIcons: Record<Genre, keyof typeof Ionicons.glyphMap> = {
 };
 
 interface MediaItem {
-  title: string;
+  title?: string;
   imageUrl: string;
-  duration: string;
+  duration?: string;
 }
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function HomeScreen() {
+  // Existing state for movies, series, etc.
   const [movies, setMovies] = useState<MediaItem[]>([]);
   const [upcomingMovies, setUpcomingMovies] = useState<MediaItem[]>([]);
   const [tvSeries, setTvSeries] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // New state for carousel
+  const [carouselMovies, setCarouselMovies] = useState<MediaItem[]>([]);
+  const [carouselLoading, setCarouselLoading] = useState(true);
+  const flatListRef = useRef<FlatList>(null);
+  const currentIndex = useRef(0);
 
   const API_KEY = '7011b5acfc7ee4ea8bc216e0947cfe24';
   const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
   const router = useRouter();
 
+  // Fetch data for existing sections
   const fetchData = async () => {
     try {
       const [popularMovies, upcomingMovies, popularSeries] = await Promise.all([
@@ -77,9 +85,44 @@ export default function HomeScreen() {
     }
   };
 
+  // Fetch data for carousel
+  const fetchCarouselData = async () => {
+    try {
+      const response = await axios.get('https://api.themoviedb.org/3/trending/movie/day', {
+        params: { api_key: API_KEY, language: 'en-US' },
+      });
+
+      const items: MediaItem[] = response.data.results.slice(0, 10).map((item: any) => ({
+        imageUrl: `${BASE_IMAGE_URL}${item.poster_path}`,
+      }));
+
+      setCarouselMovies(items);
+    } catch (error) {
+      console.error('Error fetching carousel data:', error);
+    } finally {
+      setCarouselLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    fetchCarouselData();
   }, []);
+
+  // Auto-scroll for carousel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (carouselMovies.length === 0) return;
+
+      currentIndex.current = (currentIndex.current + 1) % carouselMovies.length;
+      flatListRef.current?.scrollToIndex({
+        index: currentIndex.current,
+        animated: true,
+      });
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [carouselMovies]);
 
   const renderGenre = ({ item }: { item: Genre }) => (
     <TouchableOpacity style={{ alignItems: 'center', marginHorizontal: 10 }}>
@@ -128,6 +171,14 @@ export default function HomeScreen() {
     </View>
   );
 
+  const renderCarouselImage = ({ item }: { item: MediaItem }) => (
+    <Image
+      source={{ uri: item.imageUrl }}
+      style={{ width: screenWidth, height: 400 }}
+      resizeMode="cover"
+    />
+  );
+
   const SectionHeader = ({ title, onSeeAll }: { title: string; onSeeAll: () => void }) => (
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
       <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff', margin: 15 }}>{title}</Text>
@@ -162,6 +213,27 @@ export default function HomeScreen() {
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#000', paddingHorizontal: 15 }}>
+      {/* Carousel Section */}
+      {carouselLoading ? (
+        <ActivityIndicator size="large" color="green" style={{ marginVertical: 20 }} />
+      ) : (
+        <FlatList
+          ref={flatListRef}
+          data={carouselMovies}
+          keyExtractor={(_, index) => `carousel-${index}`}
+          renderItem={renderCarouselImage}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          getItemLayout={(_, index) => ({
+            length: screenWidth,
+            offset: screenWidth * index,
+            index,
+          })}
+        />
+      )}
+
+      {/* Welcome Section */}
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Text
           style={{
