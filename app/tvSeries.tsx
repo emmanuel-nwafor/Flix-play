@@ -11,6 +11,7 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
+import { Link } from 'expo-router';
 import axios from 'axios';
 
 const API_KEY = '7011b5acfc7ee4ea8bc216e0947cfe24';
@@ -97,22 +98,26 @@ const TvSeries = () => {
         />
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.genreScroll}>
-          <TouchableOpacity style={styles.seriesSelectionBtn}>
-            <Text style={styles.text}>Action</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.seriesSelectionBtn}>
-            <Text style={styles.text}>Comedy</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.seriesSelectionBtn}>
-            <Text style={styles.text}>Fantasy</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.seriesSelectionBtn}>
-            <Text style={styles.text}>Drama</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.seriesSelectionBtn}>
-            <Text style={styles.text}>Sci-Fi</Text>
-          </TouchableOpacity>
-
+          <Link href="/actionTV" asChild>
+            <TouchableOpacity style={styles.seriesSelectionBtn}>
+              <Text style={styles.text}>Action</Text>
+            </TouchableOpacity>
+          </Link>
+          <Link href="/fantasyTV" asChild>
+            <TouchableOpacity style={styles.seriesSelectionBtn}>
+              <Text style={styles.text}>Comedy</Text>
+            </TouchableOpacity>
+          </Link>
+          <Link href="/anime&cartoonTV" asChild>
+            <TouchableOpacity style={styles.seriesSelectionBtn}>
+              <Text style={styles.text}>Anime & Cartoon</Text>
+            </TouchableOpacity>
+          </Link>
+          <Link href="/sci-fiTV" asChild>
+            <TouchableOpacity style={styles.seriesSelectionBtn}>
+              <Text style={styles.text}>Sci-Fi</Text>
+            </TouchableOpacity>
+          </Link>
         </ScrollView>
       </View>
 
