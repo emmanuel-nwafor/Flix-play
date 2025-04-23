@@ -2,22 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, ActivityIndicator, TextInput, SafeAreaView } from 'react-native';
 import axios from 'axios';
 
-export default function AnimeAndCartoon() {
-  const [animeAndCartoonSeries, setAnimeAndCartoonSeries] = useState<any[]>([]);
-  const [filteredSeries, setFilteredSeries] = useState<any[]>([]);
+export default function ComedyTV() {
+  const [comedyTVSeries, setComedyTVSeries] = useState<any[]>([]);
+  const [filteredTVSeries, setFilteredTVSeries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    const fetchAnimeAndCartoonSeries = async () => {
+    const fetchComedyTVSeries = async () => {
       try {
         const allSeries: any[] = [];
         let page = 1;
         let totalPages = 1;
 
+        // Fetching comedy TV series (genre ID 35)
         while (page <= totalPages && page <= 5) {
           const response = await axios.get(
-            `https://api.themoviedb.org/3/discover/tv?api_key=7011b5acfc7ee4ea8bc216e0947cfe24&with_genres=16&language=en-US&page=${page}`
+            `https://api.themoviedb.org/3/discover/tv?api_key=7011b5acfc7ee4ea8bc216e0947cfe24&with_genres=35&language=en-US&page=${page}`
           );
           
           console.log('Fetched Data:', response.data); // Log the response data
@@ -27,31 +28,31 @@ export default function AnimeAndCartoon() {
           page++;
         }
 
-        setAnimeAndCartoonSeries(allSeries);
-        setFilteredSeries(allSeries); // Initially, all TV series are displayed
+        setComedyTVSeries(allSeries);
+        setFilteredTVSeries(allSeries); // Initially, all comedy TV series are displayed
       } catch (error) {
-        console.error('Error fetching anime and cartoon series:', error);
+        console.error('Error fetching comedy TV series:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAnimeAndCartoonSeries();
+    fetchComedyTVSeries();
   }, []);
 
   // This function updates the list based on the search query
   const handleSearch = (text: string) => {
     setSearchQuery(text);
-    const filtered = animeAndCartoonSeries.filter((series) =>
+    const filtered = comedyTVSeries.filter((series) =>
       series.name.toLowerCase().includes(text.toLowerCase()) // Matching titles
     );
     
     console.log('Filtered Data:', filtered); // Log the filtered data
 
-    setFilteredSeries(filtered);
+    setFilteredTVSeries(filtered);
   };
 
-  const renderSeriesItem = ({ item }: { item: any }) => (
+  const renderTVSeriesItem = ({ item }: { item: any }) => (
     <View style={styles.tvSeriesCard}>
       <Image
         source={{ uri: `https://image.tmdb.org/t/p/w500${item.poster_path}` }}
@@ -69,7 +70,7 @@ export default function AnimeAndCartoon() {
     <SafeAreaView style={styles.container}>
       <TextInput
         style={styles.searchInput}
-        placeholder="Search Anime & Cartoon Series..."
+        placeholder="Search Comedy TV Series..."
         placeholderTextColor="#888"
         value={searchQuery}  // Keeps track of the search input
         onChangeText={handleSearch}  // Updates the filtered list as the text changes
@@ -79,15 +80,15 @@ export default function AnimeAndCartoon() {
         <ActivityIndicator size="large" color="green" />
       ) : (
         <FlatList
-          data={filteredSeries}  // Displays filtered list
+          data={filteredTVSeries}  // Displays filtered list
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
           columnWrapperStyle={styles.row}
-          renderItem={renderSeriesItem}
+          renderItem={renderTVSeriesItem}
           contentContainerStyle={{ paddingBottom: 30 }}
           ListEmptyComponent={
             <Text style={{ color: '#aaa', textAlign: 'center', marginTop: 30 }}>
-              No anime or cartoon series found.
+              No comedy TV series found.
             </Text>
           }
         />

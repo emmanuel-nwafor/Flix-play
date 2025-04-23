@@ -79,6 +79,31 @@ export default function RootLayout() {
             title: "Drama", 
           }}
         />
+        {/* SERIES SECTION */}
+        <Stack.Screen
+          name="anime&cartoonTV"
+          options={{
+            headerShown: true,
+            headerTintColor: "#fff", 
+            title: "Anime & Cartoon Series", 
+          }}
+        />
+        <Stack.Screen
+          name="allTV"
+          options={{
+            headerShown: true,
+            headerTintColor: "#fff", 
+            title: "All Series", 
+          }}
+        />
+        <Stack.Screen
+          name="comedyTV"
+          options={{
+            headerShown: true,
+            headerTintColor: "#fff", 
+            title: "Comedy Series", 
+          }}
+        />
 
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />

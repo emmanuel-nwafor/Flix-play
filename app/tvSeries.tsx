@@ -98,12 +98,12 @@ const TvSeries = () => {
         />
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.genreScroll}>
-          <Link href="/actionTV" asChild>
+          <Link href="/allTV" asChild>
             <TouchableOpacity style={styles.seriesSelectionBtn}>
-              <Text style={styles.text}>Action</Text>
+              <Text style={styles.text}>All Series</Text>
             </TouchableOpacity>
           </Link>
-          <Link href="/fantasyTV" asChild>
+          <Link href="/comedyTV" asChild>
             <TouchableOpacity style={styles.seriesSelectionBtn}>
               <Text style={styles.text}>Comedy</Text>
             </TouchableOpacity>
@@ -111,11 +111,6 @@ const TvSeries = () => {
           <Link href="/anime&cartoonTV" asChild>
             <TouchableOpacity style={styles.seriesSelectionBtn}>
               <Text style={styles.text}>Anime & Cartoon</Text>
-            </TouchableOpacity>
-          </Link>
-          <Link href="/sci-fiTV" asChild>
-            <TouchableOpacity style={styles.seriesSelectionBtn}>
-              <Text style={styles.text}>Sci-Fi</Text>
             </TouchableOpacity>
           </Link>
         </ScrollView>

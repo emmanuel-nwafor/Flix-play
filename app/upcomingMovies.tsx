@@ -8,8 +8,6 @@ import {
   SafeAreaView,
   ActivityIndicator,
   TextInput,
-  ScrollView,
-  TouchableOpacity,
   Dimensions,
 } from 'react-native';
 import axios from 'axios';
@@ -100,28 +98,6 @@ const UpcomingMoviesPage = () => {
         />
       </View>
 
-      {/* Genre Selection */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.genreScroll}
-        contentContainerStyle={{ paddingHorizontal: 10 }}
-      >
-        {['Action', 'Comedy', 'Fantasy', 'Cartoon & Anime', 'Sci-Fi'].map((genre) => (
-          <TouchableOpacity
-            key={genre}
-            style={styles.seriesSelectionBtn}
-            activeOpacity={0.7}
-            onPress={() => {
-              // Handle genre selection (optional future feature)
-              console.log(`Selected genre: ${genre}`);
-            }}
-          >
-            <Text style={styles.text}>{genre}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
       {/* Movie List */}
       {loading ? (
         <ActivityIndicator size="large" color="green" />
@@ -209,23 +185,5 @@ const styles = StyleSheet.create({
     color: '#ccc',
     fontSize: 13,
     marginTop: 4,
-  },
-  genreScroll: {
-    width: '100%',
-    marginBottom: 15,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingVertical: 5,
-  },
-  seriesSelectionBtn: {
-    borderRadius: 100,
-    backgroundColor: 'green',
-    marginRight: 10,
-    marginBottom: 10,
-    padding: 20
-  },
-  text: {
-    color: 'white',
-    fontWeight: '600',
   },
 });
