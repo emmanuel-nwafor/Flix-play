@@ -104,6 +104,15 @@ export default function RootLayout() {
             title: "Comedy Series", 
           }}
         />
+        {/* MOVIE DETAILS */}
+        <Stack.Screen
+          name="detailsScreen"
+          options={{
+            headerShown: true,
+            headerTintColor: "#fff", 
+            title: "Details", 
+          }}
+        />
 
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />

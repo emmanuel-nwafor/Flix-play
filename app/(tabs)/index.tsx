@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView } from 'react-native';
 import axios from 'axios';
@@ -120,7 +119,10 @@ const HomeScreen: React.FC = () => {
   }, [carouselMovies]);
 
   const navigateToDetails = (id: number, mediaType: 'movie' | 'tv') => {
-    router.push(`/details/${id}?type=${mediaType}`);
+    router.push({
+      pathname: '/detailsScreen',
+      params: { id: id.toString(), type: mediaType },
+    });
   };
 
   const renderMovie = ({ item }: { item: MediaItem }) => (
@@ -246,6 +248,5 @@ const HomeScreen: React.FC = () => {
     </ScrollView>
   );
 };
-
 
 export default HomeScreen;
