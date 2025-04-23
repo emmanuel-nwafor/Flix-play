@@ -54,7 +54,7 @@ export default function ActionMoviesPage() {
       </View>
     </View>
   );
-
+  
   return (
     <SafeAreaView style={styles.container}>
       {/* <Text style={styles.heading}>Action Movies</Text> */}
