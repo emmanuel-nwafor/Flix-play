@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from "expo-router";
 import {
   View,
   Text,
@@ -19,15 +20,15 @@ const numColumns = 2;
 const cardMargin = 10;
 const cardWidth = (screenWidth - cardMargin * (numColumns + 1)) / numColumns;
 
-export default function ActionMoviesPage() {
-  const [actionMovies, setActionMovies] = useState<any[]>([]);
+export default function TopMoviesPage() {
+  const [topMovies, setTopMovies] = useState<any[]>([]);
   const [filteredMovies, setFilteredMovies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
 
   useEffect(() => {
-    const fetchActionMovies = async () => {
+    const fetchTopMovies = async () => {
       try {
         const allMovies: any[] = [];
         let page = 1;
@@ -35,28 +36,28 @@ export default function ActionMoviesPage() {
 
         while (page <= totalPages && page <= 5) {
           const response = await axios.get(
-            `https://api.themoviedb.org/3/discover/movie?api_key=7011b5acfc7ee4ea8bc216e0947cfe24&with_genres=28&language=en-US&page=${page}`
+            `https://api.themoviedb.org/3/movie/top_rated?api_key=7011b5acfc7ee4ea8bc216e0947cfe24&language=en-US&page=${page}`
           );
           allMovies.push(...response.data.results);
           totalPages = response.data.total_pages;
           page++;
         }
 
-        setActionMovies(allMovies);
+        setTopMovies(allMovies);
         setFilteredMovies(allMovies);
       } catch (error) {
-        console.error('Error fetching action movies:', error);
+        console.error('Error fetching top-rated movies:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchActionMovies();
+    fetchTopMovies();
   }, []);
 
   const handleSearch = (text: string) => {
     setSearchQuery(text);
-    const filtered = actionMovies.filter((movie) =>
+    const filtered = topMovies.filter((movie) =>
       movie.title.toLowerCase().includes(text.toLowerCase())
     );
     setFilteredMovies(filtered);
@@ -89,11 +90,35 @@ export default function ActionMoviesPage() {
     <ScrollView style={styles.container}>
       <TextInput
         style={styles.searchInput}
-        placeholder="Search action movies..."
+        placeholder="Search top rated movies..."
         placeholderTextColor="#aaa"
         value={searchQuery}
         onChangeText={handleSearch}
       />
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.genreScroll}>
+          <Link href="/action" asChild>
+            <TouchableOpacity style={styles.seriesSelectionBtn}>
+              <Text style={styles.text}>Action</Text>
+            </TouchableOpacity>
+          </Link>
+          <Link href="/fantasy" asChild>
+            <TouchableOpacity style={styles.seriesSelectionBtn}>
+              <Text style={styles.text}>Fantasy</Text>
+            </TouchableOpacity>
+          </Link>
+          <Link href="/anime" asChild>
+            <TouchableOpacity style={styles.seriesSelectionBtn}>
+              <Text style={styles.text}>Anime & Cartoon</Text>
+            </TouchableOpacity>
+          </Link>
+          <Link href="/sci-fi" asChild>
+            <TouchableOpacity style={styles.seriesSelectionBtn}>
+              <Text style={styles.text}>Sci-Fi</Text>
+            </TouchableOpacity>
+          </Link>
+        </ScrollView>
+
       {loading ? (
         <ActivityIndicator size="large" color="green" style={{ marginTop: 30 }} />
       ) : (
@@ -141,6 +166,22 @@ const styles = StyleSheet.create({
     color: '#fff',
     padding: 10,
     fontSize: 14,
+    fontWeight: '600',
+  },
+
+  genreScroll: {
+    width: '100%',
+    marginBottom: 15,
+  },
+  seriesSelectionBtn: {
+    borderRadius: 100,
+    backgroundColor: 'green',
+    marginRight: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  text: {
+    color: 'white',
     fontWeight: '600',
   },
 });

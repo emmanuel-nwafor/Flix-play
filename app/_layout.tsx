@@ -14,7 +14,7 @@ export default function RootLayout() {
           }}
         >
         <Stack.Screen
-          name="latestMovies"
+          name="topMovie"
           options={{
             headerShown: true,
             headerTintColor: "#fff", 

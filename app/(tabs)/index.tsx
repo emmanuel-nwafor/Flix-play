@@ -242,7 +242,7 @@ const HomeScreen: React.FC = () => {
       )}
 
       {/* Sections */}
-      {renderSection('Top Movies 📽', '/latestMovies', movies, loading)}
+      {renderSection('Top Movies 📽', '/topMovie', movies, loading)}
       {renderSection('TV Series 📺', '/tvSeries', tvSeries, loading)}
       {renderSection('Upcoming Movies 🎞', '/upcomingMovies', upcomingMovies, loading)}
     </ScrollView>
