@@ -28,6 +28,7 @@ export default function TabsLayout() {
           ),
           title: "Flix Play",
           headerTintColor: "gray",
+          headerShown: false,
         }}
       />
       <Tabs.Screen

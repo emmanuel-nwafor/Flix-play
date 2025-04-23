@@ -1,19 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView } from 'react-native';
 import axios from 'axios';
-import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-
-const genreList = ['Home', 'Western', 'Movies', 'Horror', 'Fantasy'] as const;
-type Genre = typeof genreList[number];
-
-const genreIcons: Record<Genre, keyof typeof Ionicons.glyphMap> = {
-  Home: 'home',
-  Western: 'map',
-  Movies: 'film',
-  Horror: 'skull',
-  Fantasy: 'planet',
-};
 
 interface MediaItem {
   title?: string;
@@ -23,18 +11,18 @@ interface MediaItem {
 
 const screenWidth = Dimensions.get('window').width;
 
-export default function HomeScreen() {
-  // Existing state for movies, series, etc.
+const HomeScreen: React.FC = () => {
+  // State for movies, series, etc.
   const [movies, setMovies] = useState<MediaItem[]>([]);
   const [upcomingMovies, setUpcomingMovies] = useState<MediaItem[]>([]);
   const [tvSeries, setTvSeries] = useState<MediaItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  // New state for carousel
+  // State for carousel
   const [carouselMovies, setCarouselMovies] = useState<MediaItem[]>([]);
-  const [carouselLoading, setCarouselLoading] = useState(true);
-  const flatListRef = useRef<FlatList>(null);
-  const currentIndex = useRef(0);
+  const [carouselLoading, setCarouselLoading] = useState<boolean>(true);
+  const flatListRef = useRef<FlatList<MediaItem>>(null);
+  const currentIndex = useRef<number>(0);
 
   const API_KEY = '7011b5acfc7ee4ea8bc216e0947cfe24';
   const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -68,7 +56,7 @@ export default function HomeScreen() {
         }),
       ]);
 
-      const mapResults = (items: any[]): MediaItem[] =>
+      const mapResults = (items: { title?: string; name?: string; poster_path: string }[]): MediaItem[] =>
         items.slice(0, 5).map((item) => ({
           title: item.title || item.name,
           imageUrl: `${BASE_IMAGE_URL}${item.poster_path}`,
@@ -92,7 +80,7 @@ export default function HomeScreen() {
         params: { api_key: API_KEY, language: 'en-US' },
       });
 
-      const items: MediaItem[] = response.data.results.slice(0, 10).map((item: any) => ({
+      const items: MediaItem[] = response.data.results.slice(0, 10).map((item: { poster_path: string }) => ({
         imageUrl: `${BASE_IMAGE_URL}${item.poster_path}`,
       }));
 
@@ -123,22 +111,6 @@ export default function HomeScreen() {
 
     return () => clearInterval(interval);
   }, [carouselMovies]);
-
-  const renderGenre = ({ item }: { item: Genre }) => (
-    <TouchableOpacity style={{ alignItems: 'center', marginHorizontal: 10 }}>
-      <View
-        style={{
-          backgroundColor: '#111827',
-          borderRadius: 20,
-          padding: 20,
-          marginBottom: 5,
-        }}
-      >
-        <Ionicons name={genreIcons[item]} size={24} color="green" />
-      </View>
-      <Text style={{ color: '#fff' }}>{item}</Text>
-    </TouchableOpacity>
-  );
 
   const renderMovie = ({ item }: { item: MediaItem }) => (
     <View
@@ -172,14 +144,38 @@ export default function HomeScreen() {
   );
 
   const renderCarouselImage = ({ item }: { item: MediaItem }) => (
-    <Image
-      source={{ uri: item.imageUrl }}
-      style={{ width: screenWidth, height: 400 }}
-      resizeMode="cover"
-    />
+    <View style={{ position: 'relative', width: screenWidth, height: 300 }}>
+      <Image
+        source={{ uri: item.imageUrl }}
+        style={{ width: screenWidth, height: 300 }}
+        resizeMode="cover"
+      />
+      <View
+        style={{
+          position: 'absolute',
+          top: 15,
+          left: 15,
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          paddingVertical: 60,
+          paddingHorizontal: 60,
+          borderRadius: 8,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: '900',
+            color: '#fff',
+            textAlign: "center",
+          }}
+        >
+          Welcome To Flix Play 🎬
+        </Text>
+      </View>
+    </View>
   );
 
-  const SectionHeader = ({ title, onSeeAll }: { title: string; onSeeAll: () => void }) => (
+  const SectionHeader: React.FC<{ title: string; onSeeAll: () => void }> = ({ title, onSeeAll }) => (
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
       <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff', margin: 15 }}>{title}</Text>
       <TouchableOpacity onPress={onSeeAll}>
@@ -188,12 +184,7 @@ export default function HomeScreen() {
     </View>
   );
 
-  const renderSection = (
-    title: string,
-    navigateTo: string,
-    data: MediaItem[],
-    isLoading: boolean
-  ) => (
+  const renderSection = (title: string, navigateTo: string, data: MediaItem[], isLoading: boolean) => (
     <>
       <SectionHeader title={title} onSeeAll={() => router.push(navigateTo)} />
       {isLoading ? (
@@ -233,36 +224,12 @@ export default function HomeScreen() {
         />
       )}
 
-      {/* Welcome Section */}
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text
-          style={{
-            fontSize: 24,
-            fontWeight: 'bold',
-            color: '#fff',
-            margin: 15,
-            flex: 1,
-          }}
-        >
-          Welcome To Flix Play 🎬
-        </Text>
-      </View>
-
-      {/* Genre Section */}
-      <View style={{ marginBottom: 30 }}>
-        <FlatList
-          horizontal
-          data={genreList}
-          keyExtractor={(item) => item}
-          renderItem={renderGenre}
-          showsHorizontalScrollIndicator={false}
-        />
-      </View>
-
       {/* Sections */}
       {renderSection('Top Movies 📽', '/latestMovies', movies, loading)}
       {renderSection('TV Series 📺', '/tvSeries', tvSeries, loading)}
       {renderSection('Upcoming Movies 🎞', '/upcomingMovies', upcomingMovies, loading)}
     </ScrollView>
   );
-}
+};
+
+export default HomeScreen;
