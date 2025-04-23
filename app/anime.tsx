@@ -64,7 +64,7 @@ export default function AnimeMoviesPage() {
   return (
     <SafeAreaView style={styles.container}>
       <TextInput
-        placeholder="Search anime movies..."
+        placeholder="Search anime & cartoon movies..."
         placeholderTextColor="#aaa"
         style={styles.searchInput}
         value={searchQuery}

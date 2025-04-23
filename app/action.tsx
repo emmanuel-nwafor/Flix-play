@@ -7,12 +7,15 @@ import {
   Image,
   ActivityIndicator,
   SafeAreaView,
+  TextInput,
 } from 'react-native';
 import axios from 'axios';
 
 export default function ActionMoviesPage() {
   const [actionMovies, setActionMovies] = useState<any[]>([]);
+  const [filteredMovies, setFilteredMovies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchActionMovies = async () => {
@@ -31,6 +34,7 @@ export default function ActionMoviesPage() {
         }
 
         setActionMovies(allMovies);
+        setFilteredMovies(allMovies);
       } catch (error) {
         console.error('Error fetching action movies:', error);
       } finally {
@@ -40,6 +44,14 @@ export default function ActionMoviesPage() {
 
     fetchActionMovies();
   }, []);
+
+  const handleSearch = (text: string) => {
+    setSearchQuery(text);
+    const filtered = actionMovies.filter((movie) =>
+      movie.title.toLowerCase().includes(text.toLowerCase())
+    );
+    setFilteredMovies(filtered);
+  };
 
   const renderMovieItem = ({ item }: { item: any }) => (
     <View style={styles.movieCard}>
@@ -54,16 +66,22 @@ export default function ActionMoviesPage() {
       </View>
     </View>
   );
-  
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* <Text style={styles.heading}>Action Movies</Text> */}
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search action movies..."
+        placeholderTextColor="#888"
+        value={searchQuery}
+        onChangeText={handleSearch}
+      />
 
       {loading ? (
         <ActivityIndicator size="large" color="green" />
       ) : (
         <FlatList
-          data={actionMovies}
+          data={filteredMovies}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
           columnWrapperStyle={styles.row}
@@ -87,12 +105,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingTop: 20,
   },
-  heading: {
-    fontSize: 22,
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+  searchInput: {
+    backgroundColor: '#222',
+    color: '#fff',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     marginBottom: 20,
+    fontSize: 16,
   },
   row: {
     justifyContent: 'space-between',

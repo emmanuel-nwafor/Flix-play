@@ -7,12 +7,15 @@ import {
   Image,
   ActivityIndicator,
   SafeAreaView,
+  TextInput,
 } from 'react-native';
 import axios from 'axios';
 
 export default function FantasyMoviesPage() {
   const [fantasyMovies, setFantasyMovies] = useState<any[]>([]);
+  const [filteredMovies, setFilteredMovies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchFantasyMovies = async () => {
@@ -31,6 +34,7 @@ export default function FantasyMoviesPage() {
         }
 
         setFantasyMovies(allMovies);
+        setFilteredMovies(allMovies);
       } catch (error) {
         console.error('Error fetching fantasy movies:', error);
       } finally {
@@ -40,6 +44,14 @@ export default function FantasyMoviesPage() {
 
     fetchFantasyMovies();
   }, []);
+
+  const handleSearch = (text: string) => {
+    setSearchQuery(text);
+    const filtered = fantasyMovies.filter((movie) =>
+      movie.title.toLowerCase().includes(text.toLowerCase())
+    );
+    setFilteredMovies(filtered);
+  };
 
   const renderMovieItem = ({ item }: { item: any }) => (
     <View style={styles.movieCard}>
@@ -57,11 +69,19 @@ export default function FantasyMoviesPage() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search fantasy movies..."
+        placeholderTextColor="#888"
+        value={searchQuery}
+        onChangeText={handleSearch}
+      />
+
       {loading ? (
         <ActivityIndicator size="large" color="green" />
       ) : (
         <FlatList
-          data={fantasyMovies}
+          data={filteredMovies}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
           columnWrapperStyle={styles.row}
@@ -84,6 +104,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     paddingHorizontal: 10,
     paddingTop: 20,
+  },
+  searchInput: {
+    backgroundColor: '#222',
+    color: '#fff',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    marginBottom: 20,
+    fontSize: 16,
   },
   row: {
     justifyContent: 'space-between',
