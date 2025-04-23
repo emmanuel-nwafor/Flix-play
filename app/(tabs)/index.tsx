@@ -55,7 +55,6 @@ const HomeScreen: React.FC = () => {
           },
         }),
       ]);
-
       const mapResults = (items: { title?: string; name?: string; poster_path: string }[]): MediaItem[] =>
         items.slice(0, 5).map((item) => ({
           title: item.title || item.name,
