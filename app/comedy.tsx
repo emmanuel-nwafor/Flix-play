@@ -1,11 +1,27 @@
-import { View, Text } from 'react-native'
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  ActivityIndicator,
+  SafeAreaView,
+} from 'react-native';
+import axios from 'axios';
 
 export default function comedy() {
   return (
-    <View>
+    <View style={style.container}>
         <Text style={{ fontSize: 40, color: "white" }}>
             Hello comedy Movies
         </Text>
     </View>
   )
 }
+
+const style = StyleSheet.create({
+  container: {
+    backgroundColor: "#000"
+  }
+})
