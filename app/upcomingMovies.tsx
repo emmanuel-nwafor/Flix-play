@@ -107,7 +107,7 @@ const UpcomingMoviesPage = () => {
         style={styles.genreScroll}
         contentContainerStyle={{ paddingHorizontal: 10 }}
       >
-        {['Action', 'Comedy', 'Fantasy', 'Drama', 'Sci-Fi'].map((genre) => (
+        {['Action', 'Comedy', 'Fantasy', 'Cartoon & Anime', 'Sci-Fi'].map((genre) => (
           <TouchableOpacity
             key={genre}
             style={styles.seriesSelectionBtn}

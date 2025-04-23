@@ -7,39 +7,45 @@ import {
   Image,
   ActivityIndicator,
   SafeAreaView,
+  TextInput,
 } from 'react-native';
 import axios from 'axios';
 
-export default function ComedyMoviesPage() {
-  const [comedyMovies, setComedyMovies] = useState<any[]>([]);
+export default function AnimeMoviesPage() {
+  const [animeMovies, setAnimeMovies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    const fetchComedyMovies = async () => {
+    const fetchAnimeMovies = async () => {
       try {
-        const allComedyMovies: any[] = [];
+        const allMovies: any[] = [];
         let page = 1;
         let totalPages = 1;
 
         while (page <= totalPages && page <= 5) {
           const response = await axios.get(
-            `https://api.themoviedb.org/3/discover/movie?api_key=7011b5acfc7ee4ea8bc216e0947cfe24&with_genres=35&language=en-US&page=${page}`
+            `https://api.themoviedb.org/3/discover/movie?api_key=7011b5acfc7ee4ea8bc216e0947cfe24&with_genres=16&language=en-US&page=${page}`
           );
-          allComedyMovies.push(...response.data.results);
+          allMovies.push(...response.data.results);
           totalPages = response.data.total_pages;
           page++;
         }
 
-        setComedyMovies(allComedyMovies);
+        setAnimeMovies(allMovies);
       } catch (error) {
-        console.error('Error fetching comedy movies:', error);
+        console.error('Error fetching anime movies:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchComedyMovies();
+    fetchAnimeMovies();
   }, []);
+
+  const filteredMovies = animeMovies.filter((movie) =>
+    movie.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const renderMovieItem = ({ item }: { item: any }) => (
     <View style={styles.movieCard}>
@@ -57,11 +63,19 @@ export default function ComedyMoviesPage() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <TextInput
+        placeholder="Search anime movies..."
+        placeholderTextColor="#aaa"
+        style={styles.searchInput}
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
+
       {loading ? (
         <ActivityIndicator size="large" color="green" />
       ) : (
         <FlatList
-          data={comedyMovies}
+          data={filteredMovies}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
           columnWrapperStyle={styles.row}
@@ -69,7 +83,7 @@ export default function ComedyMoviesPage() {
           contentContainerStyle={{ paddingBottom: 30 }}
           ListEmptyComponent={
             <Text style={{ color: '#aaa', textAlign: 'center', marginTop: 30 }}>
-              No comedy movies found.
+              No anime-style movies found.
             </Text>
           }
         />
@@ -84,6 +98,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     paddingHorizontal: 10,
     paddingTop: 20,
+  },
+  searchInput: {
+    backgroundColor: '#1a1a1a',
+    color: 'white',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    fontSize: 16,
   },
   row: {
     justifyContent: 'space-between',

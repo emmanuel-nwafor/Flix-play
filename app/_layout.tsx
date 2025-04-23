@@ -48,11 +48,11 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
-          name="comedy"
+          name="anime"
           options={{
             headerShown: true,
             headerTintColor: "#fff", 
-            title: "Comedy", 
+            title: "Anime & Cartoons", 
           }}
         />
         <Stack.Screen

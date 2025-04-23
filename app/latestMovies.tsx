@@ -95,19 +95,14 @@ const UpcomingMoviesPage = () => {
               <Text style={styles.text}>Action</Text>
             </TouchableOpacity>
           </Link>
-          <Link href="/comedy" asChild>
-            <TouchableOpacity style={styles.seriesSelectionBtn}>
-              <Text style={styles.text}>Comedy</Text>
-            </TouchableOpacity>
-          </Link>
           <Link href="/fantasy" asChild>
             <TouchableOpacity style={styles.seriesSelectionBtn}>
               <Text style={styles.text}>Fantasy</Text>
             </TouchableOpacity>
           </Link>
-          <Link href="/drama" asChild>
+          <Link href="/anime" asChild>
             <TouchableOpacity style={styles.seriesSelectionBtn}>
-              <Text style={styles.text}>Drama</Text>
+              <Text style={styles.text}>Anime & Cartoon</Text>
             </TouchableOpacity>
           </Link>
           <Link href="/sci-fi" asChild>
