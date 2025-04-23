@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView } from 'react-native';
 import axios from 'axios';
@@ -246,67 +247,5 @@ const HomeScreen: React.FC = () => {
   );
 };
 
-/*
- * Suggested Details Page Setup (create in app/details/[id].tsx):
- *
- * import { useLocalSearchParams, useRouter } from 'expo-router';
- * import { View, Text, Image, ActivityIndicator } from 'react-native';
- * import axios from 'axios';
- * import { useEffect, useState } from 'react';
- *
- * const DetailsScreen: React.FC = () => {
- *   const { id, type } = useLocalSearchParams<{ id: string; type: 'movie' | 'tv' }>();
- *   const [details, setDetails] = useState<any>(null);
- *   const [loading, setLoading] = useState<boolean>(true);
- *
- *   const API_KEY = '7011b5acfc7ee4ea8bc216e0947cfe24';
- *   const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
- *
- *   useEffect(() => {
- *     const fetchDetails = async () => {
- *       try {
- *         const response = await axios.get(`https://api.themoviedb.org/3/${type}/${id}`, {
- *           params: { api_key: API_KEY, language: 'en-US' },
- *         });
- *         setDetails(response.data);
- *       } catch (error) {
- *         console.error('Error fetching details:', error);
- *       } finally {
- *         setLoading(false);
- *       }
- *     };
- *     fetchDetails();
- *   }, [id, type]);
- *
- *   if (loading) return <ActivityIndicator size="large" color="green" />;
- *   if (!details) return <Text style={{ color: '#fff' }}>Error loading details</Text>;
- *
- *   return (
- *     <View style={{ flex: 1, backgroundColor: '#000', padding: 15 }}>
- *       <Image source={{ uri: `${BASE_IMAGE_URL}${details.poster_path}` }} style={{ width: '100%', height: 400 }} />
- *       <Text style={{ color: '#fff', fontSize: 24, fontWeight: 'bold' }}>{details.title || details.name}</Text>
- *       <Text style={{ color: '#fff' }}>{details.overview}</Text>
- *       <Text style={{ color: '#fff' }}>Release: {details.release_date || details.first_air_date}</Text>
- *       <Text style={{ color: '#fff' }}>Rating: {details.vote_average}/10</Text>
- *     </View>
- *   );
- * };
- *
- * export default DetailsScreen;
- *
- * Ensure your app/_layout.tsx includes a dynamic route for details, e.g.:
- * import { Stack } from 'expo-router';
- * export default function Layout() {
- *   return (
- *     <Stack>
- *       <Stack.Screen name="index" options={{ title: 'Home' }} />
- *       <Stack.Screen name="details/[id]" options={{ title: 'Details' }} />
- *       <Stack.Screen name="latestMovies" />
- *       <Stack.Screen name="tvSeries" />
- *       <Stack.Screen name="upcomingMovies" />
- *     </Stack>
- *   );
- * }
- */
 
 export default HomeScreen;
